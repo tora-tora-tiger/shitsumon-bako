@@ -23,10 +23,10 @@ interface Questions {
     @body response: ApiResponse<Question>;
   } | {
     @statusCode _: 400;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   } | {
     @statusCode _: 403;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   };
 
   /**
@@ -43,7 +43,7 @@ interface Questions {
     @body response: PaginatedResponse<QuestionDetail>;
   } | {
     @statusCode _: 401;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   };
 
   /**
@@ -60,7 +60,7 @@ interface Questions {
     @body response: PaginatedResponse<QuestionDetail>;
   } | {
     @statusCode _: 401;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   };
 
   /**
@@ -75,15 +75,15 @@ interface Questions {
       }
     | {
         @statusCode _: 401;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       }
     | {
         @statusCode _: 404;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       }
     | {
         @statusCode _: 403;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       };
 
   /**
@@ -102,19 +102,19 @@ interface Questions {
       }
     | {
         @statusCode _: 401;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       }
     | {
         @statusCode _: 404;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       }
     | {
         @statusCode _: 403;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       }
     | {
         @statusCode _: 400;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       };
 
   /**
@@ -129,15 +129,15 @@ interface Questions {
       }
     | {
         @statusCode _: 401;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       }
     | {
         @statusCode _: 404;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       }
     | {
         @statusCode _: 403;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       };
 
   /**
@@ -152,15 +152,15 @@ interface Questions {
       }
     | {
         @statusCode _: 401;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       }
     | {
         @statusCode _: 404;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       }
     | {
         @statusCode _: 403;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       };
 
   /**
@@ -179,19 +179,19 @@ interface Questions {
       }
     | {
         @statusCode _: 401;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       }
     | {
         @statusCode _: 404;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       }
     | {
         @statusCode _: 403;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       }
     | {
         @statusCode _: 400;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       };
 
   /**
@@ -209,7 +209,7 @@ interface Questions {
     @body response: PaginatedResponse<PublicQA>;
   } | {
     @statusCode _: 404;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   };
 
   /**
@@ -222,6 +222,6 @@ interface Questions {
     @body response: ApiResponse<{}>;
   } | {
     @statusCode _: 400;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   };
 }

@@ -8,18 +8,17 @@ using TypeSpec.Rest;
 namespace ShitsumonBako;
 
 /**
- * レスポンス構造
+ * 共通レスポンス構造
  */
 model ApiResponse<T> {
-  statusCode: int32;
   message?: string;
   data?: T;
 }
 
 /**
- * エラーレスポンス
+ * エラー詳細情報
  */
-model ErrorResponse {
+model ErrorDetails {
   message: string;
   code?: string;
   details?: unknown;

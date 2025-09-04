@@ -24,15 +24,15 @@ interface Files {
       }
     | {
         @statusCode _: 400;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       }
     | {
         @statusCode _: 413;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       }
     | {
         @statusCode _: 415;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       };
 
   /**
@@ -46,7 +46,7 @@ interface Files {
     @body content: bytes;
   } | {
     @statusCode _: 404;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   };
 
   /**
@@ -61,14 +61,14 @@ interface Files {
       }
     | {
         @statusCode _: 401;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       }
     | {
         @statusCode _: 404;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       }
     | {
         @statusCode _: 403;
-        @body error: ErrorResponse;
+        @body error: ApiResponse<ErrorDetails>;
       };
 }

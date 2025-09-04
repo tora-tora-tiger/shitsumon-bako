@@ -22,10 +22,10 @@ interface Users {
     @body response: ApiResponse<User>;
   } | {
     @statusCode _: 400;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   } | {
     @statusCode _: 409;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   };
 
   /**
@@ -38,7 +38,7 @@ interface Users {
     @body response: ApiResponse<LoginResponse>;
   } | {
     @statusCode _: 401;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   };
 
   /**
@@ -51,7 +51,7 @@ interface Users {
     @body response: ApiResponse<{}>;
   } | {
     @statusCode _: 401;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   };
 
   /**
@@ -64,7 +64,7 @@ interface Users {
     @body response: ApiResponse<User>;
   } | {
     @statusCode _: 401;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   };
 
   /**
@@ -80,10 +80,10 @@ interface Users {
     @body response: ApiResponse<User>;
   } | {
     @statusCode _: 401;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   } | {
     @statusCode _: 400;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   };
 
   /**
@@ -96,7 +96,7 @@ interface Users {
     @body response: ApiResponse<PublicUserInfo>;
   } | {
     @statusCode _: 404;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   };
 
   /**
@@ -114,10 +114,10 @@ interface Users {
     @body response: ApiResponse<BlockedUser>;
   } | {
     @statusCode _: 401;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   } | {
     @statusCode _: 400;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   };
 
   /**
@@ -130,7 +130,7 @@ interface Users {
     @body response: PaginatedResponse<BlockedUser>;
   } | {
     @statusCode _: 401;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   };
 
   /**
@@ -143,10 +143,10 @@ interface Users {
     @body response: ApiResponse<{}>;
   } | {
     @statusCode _: 401;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   } | {
     @statusCode _: 404;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   };
 
   /**
@@ -162,10 +162,10 @@ interface Users {
     @body response: ApiResponse<NgWord>;
   } | {
     @statusCode _: 401;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   } | {
     @statusCode _: 400;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   };
 
   /**
@@ -178,7 +178,7 @@ interface Users {
     @body response: PaginatedResponse<NgWord>;
   } | {
     @statusCode _: 401;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   };
 
   /**
@@ -191,9 +191,9 @@ interface Users {
     @body response: ApiResponse<{}>;
   } | {
     @statusCode _: 401;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   } | {
     @statusCode _: 404;
-    @body error: ErrorResponse;
+    @body error: ApiResponse<ErrorDetails>;
   };
 }
