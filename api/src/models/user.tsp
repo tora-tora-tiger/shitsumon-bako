@@ -113,7 +113,7 @@ model LoginResponse {
 }
 
 /**
- * プロフィール更新リクエスト
+ * ユーザー情報更新リクエスト
  */
 model ProfileUpdateRequest {
   displayId?: string;
@@ -124,7 +124,7 @@ model ProfileUpdateRequest {
 }
 
 /**
- * プロフィールフィールド更新
+ * プロフィール更新
  */
 model ProfileFieldUpdate {
   id?: string;
