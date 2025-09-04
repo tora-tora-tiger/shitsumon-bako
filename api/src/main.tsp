@@ -16,7 +16,7 @@ using TypeSpec.Rest;
  */
 @service
 @server("http://localhost:8080", "Development server")
-@server("https://api.shitsumon-bako.com", "Production server")
+// @server("https://api.shitsumon-bako.com", "Production server")
 namespace ShitsumonBako;
 
 /**
