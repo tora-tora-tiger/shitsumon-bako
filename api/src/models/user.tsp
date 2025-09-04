@@ -11,7 +11,9 @@ namespace ShitsumonBako;
  * ユーザープロフィール情報
  */
 model User {
+  // 内部ID
   id: string;
+  // ユーザーID（表示用、一意）
   displayId: string;
   email: string;
   displayName: string;
@@ -39,12 +41,11 @@ model ProfileField {
   name: string;
   value: string;
   order: int32;
-  isVisible: boolean;
 }
 
 union ProfileFieldType {
   "url",
-  
+
 }
 
 /**
