@@ -29,6 +29,7 @@ model ErrorDetails {
  */
 model PaginationQuery {
   @query page?: int32 = 1;
+  // 1ページあたりの件数
   @query limit?: int32 = 20;
 }
 
@@ -36,15 +37,12 @@ model PaginationQuery {
  * ページネーション付きレスポンス
  */
 model PaginatedResponse<T> {
-  success: true;
   data: T[];
   pagination: {
     page: int32;
     limit: int32;
     total: int32;
     totalPages: int32;
-    hasNext: boolean;
-    hasPrev: boolean;
   };
 }
 
