@@ -1,22 +1,27 @@
 import "@typespec/http";
 import "@typespec/rest";
+import "@typespec/openapi";
 import "../models/common.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.Rest;
+using TypeSpec.OpenAPI;
 
 namespace ShitsumonBako;
 
 /**
  * ファイル関連のエンドポイント
  */
+@tag("Files")
 @route("/api/files")
 interface Files {
-  /*
+  /**
    * 画像ファイルアップロード
    */
   @post
   @route("/images")
+  @operationId("uploadImage")
+  @summary("画像ファイルをアップロード")
   uploadImage(@header authorization?: string, @body image: bytes):
     | {
         @statusCode _: 201;
@@ -40,6 +45,8 @@ interface Files {
    */
   @get
   @route("/images/{imageId}")
+  @operationId("getImage")
+  @summary("画像ファイルを取得")
   getImage(@path imageId: string): {
     @statusCode _: 200;
     @header `content-type`: string;
@@ -54,6 +61,8 @@ interface Files {
    */
   @delete
   @route("/images/{imageId}")
+  @operationId("deleteImage")
+  @summary("画像ファイルを削除")
   deleteImage(@header authorization: string, @path imageId: string):
     | {
         @statusCode _: 200;

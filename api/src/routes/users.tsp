@@ -1,22 +1,27 @@
 import "@typespec/http";
 import "@typespec/rest";
+import "@typespec/openapi";
 import "../models/common.tsp";
 import "../models/user.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.Rest;
+using TypeSpec.OpenAPI;
 
 namespace ShitsumonBako;
 
 /**
  * ユーザー関連のエンドポイント
  */
+@tag("Users")
 @route("/api/users")
 interface Users {
   /**
    * ユーザー登録
    */
   @post
+  @operationId("registerUser")
+  @summary("新規ユーザー登録")
   register(@body request: UserRegistrationRequest): {
     @statusCode _: 201;
     @body response: ApiResponse<User>;
@@ -33,6 +38,8 @@ interface Users {
    */
   @post
   @route("/login")
+  @operationId("loginUser")
+  @summary("ユーザーログイン")
   login(@body request: LoginRequest): {
     @statusCode _: 200;
     @body response: ApiResponse<LoginResponse>;
@@ -46,6 +53,8 @@ interface Users {
    */
   @post
   @route("/logout")
+  @operationId("logoutUser")
+  @summary("ユーザーログアウト")
   logout(@header authorization: string): {
     @statusCode _: 200;
     @body response: ApiResponse<{}>;
@@ -59,6 +68,8 @@ interface Users {
    */
   @get
   @route("/me")
+  @operationId("getCurrentUser")
+  @summary("ログイン中のユーザー情報取得")
   getCurrentUser(@header authorization: string): {
     @statusCode _: 200;
     @body response: ApiResponse<User>;
@@ -72,6 +83,8 @@ interface Users {
    */
   @patch
   @route("/me")
+  @operationId("updateUserProfile")
+  @summary("ユーザープロフィール更新")
   updateProfile(
     @header authorization: string,
     @body request: ProfileUpdateRequest,
@@ -91,6 +104,8 @@ interface Users {
    */
   @get
   @route("/{userId}")
+  @operationId("getPublicUserInfo")
+  @summary("公開ユーザー情報取得")
   getPublicUserInfo(@path userId: string): {
     @statusCode _: 200;
     @body response: ApiResponse<PublicUserInfo>;
@@ -104,6 +119,8 @@ interface Users {
    */
   @post
   @route("/block")
+  @operationId("blockUser")
+  @summary("ユーザーをブロック")
   blockUser(
     @header authorization: string,
     @body request: {
@@ -125,6 +142,8 @@ interface Users {
    */
   @get
   @route("/blocked")
+  @operationId("getBlockedUsers")
+  @summary("ブロックしたユーザー一覧取得")
   getBlockedUsers(@header authorization: string, ...PaginationQuery): {
     @statusCode _: 200;
     @body response: PaginatedResponse<BlockedUser>;
@@ -138,6 +157,8 @@ interface Users {
    */
   @delete
   @route("/block/{userId}")
+  @operationId("unblockUser")
+  @summary("ユーザーのブロックを解除")
   unblockUser(@header authorization: string, @path userId: string): {
     @statusCode _: 200;
     @body response: ApiResponse<{}>;
@@ -154,6 +175,8 @@ interface Users {
    */
   @post
   @route("/ng-words")
+  @operationId("addNgWord")
+  @summary("NGワードを追加")
   addNgWord(
     @header authorization: string,
     @body request: NgWordCreateRequest,
@@ -173,6 +196,8 @@ interface Users {
    */
   @get
   @route("/ng-words")
+  @operationId("getNgWords")
+  @summary("NGワード一覧取得")
   getNgWords(@header authorization: string, ...PaginationQuery): {
     @statusCode _: 200;
     @body response: PaginatedResponse<NgWord>;
@@ -186,6 +211,8 @@ interface Users {
    */
   @delete
   @route("/ng-words/{ngWordId}")
+  @operationId("deleteNgWord")
+  @summary("NGワードを削除")
   deleteNgWord(@header authorization: string, @path ngWordId: string): {
     @statusCode _: 200;
     @body response: ApiResponse<{}>;

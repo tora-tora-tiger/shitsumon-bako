@@ -1,23 +1,28 @@
 import "@typespec/http";
 import "@typespec/rest";
+import "@typespec/openapi";
 import "../models/common.tsp";
 import "../models/question.tsp";
 import "../models/user.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.Rest;
+using TypeSpec.OpenAPI;
 
 namespace ShitsumonBako;
 
 /**
  * 質問・回答関連のエンドポイント
  */
+@tag("Questions")
 @route("/api/questions")
 interface Questions {
   /**
    * 質問送信
    */
   @post
+  @operationId("createQuestion")
+  @summary("新しい質問を送信")
   create(@body request: QuestionCreateRequest): {
     @statusCode _: 201;
     @body response: ApiResponse<Question>;
@@ -34,6 +39,8 @@ interface Questions {
    */
   @get
   @route("/received")
+  @operationId("getReceivedQuestions")
+  @summary("受信した質問一覧取得")
   getReceived(
     @header authorization: string,
     ...PaginationQuery,
@@ -51,6 +58,8 @@ interface Questions {
    */
   @get
   @route("/sent")
+  @operationId("getSentQuestions")
+  @summary("送信した質問一覧取得")
   getSent(
     @header authorization: string,
     ...PaginationQuery,
@@ -68,6 +77,8 @@ interface Questions {
    */
   @get
   @route("/{questionId}")
+  @operationId("getQuestionDetail")
+  @summary("質問詳細情報取得")
   getQuestion(@header authorization: string, @path questionId: string):
     | {
         @statusCode _: 200;
@@ -91,6 +102,8 @@ interface Questions {
    */
   @patch
   @route("/{questionId}")
+  @operationId("updateQuestion")
+  @summary("質問内容を編集")
   updateQuestion(
     @header authorization: string,
     @path questionId: string,
@@ -122,6 +135,8 @@ interface Questions {
    */
   @delete
   @route("/{questionId}")
+  @operationId("deleteQuestion")
+  @summary("質問を削除")
   deleteQuestion(@header authorization: string, @path questionId: string):
     | {
         @statusCode _: 200;
@@ -145,6 +160,8 @@ interface Questions {
    */
   @patch
   @route("/{questionId}/read")
+  @operationId("markQuestionAsRead")
+  @summary("質問を既読にマーク")
   markAsRead(@header authorization: string, @path questionId: string):
     | {
         @statusCode _: 200;
@@ -168,6 +185,8 @@ interface Questions {
    */
   @post
   @route("/{questionId}/answer")
+  @operationId("createAnswer")
+  @summary("質問に回答を作成")
   createAnswer(
     @header authorization: string,
     @path questionId: string,
@@ -199,6 +218,8 @@ interface Questions {
    */
   @get
   @route("/public/{userId}")
+  @operationId("getPublicQAs")
+  @summary("ユーザーの公開質問・回答一覧取得")
   getPublicQAs(
     @path userId: string,
     ...PaginationQuery,
@@ -217,6 +238,8 @@ interface Questions {
    */
   @post
   @route("/report")
+  @operationId("reportContent")
+  @summary("不適切なコンテンツを通報")
   report(@body request: ReportRequest): {
     @statusCode _: 201;
     @body response: ApiResponse<{}>;
