@@ -98,7 +98,7 @@ model LoginRequest {
   password: string;
 }
 
-model Identificator {
+union Identificator {
   displayId: string;
   email: string;
 }
@@ -116,6 +116,8 @@ model LoginResponse {
  * プロフィール更新リクエスト
  */
 model ProfileUpdateRequest {
+  displayId?: string;
+  email?: string;
   displayName?: string;
   iconImageId?: string;
   profileFields?: ProfileFieldUpdate[];
