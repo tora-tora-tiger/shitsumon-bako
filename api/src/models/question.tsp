@@ -22,23 +22,33 @@ enum QuestionStatus {
  */
 model Question {
   id: string;
-  content: string;
-  attachedImage?: ImageFile;
-  recipientId: string; // 受信者ID
-  senderId?: string; // ログインユーザーの場合のみ
   status: QuestionStatus;
+
+  // 受信者ID
+  recipientId: string;
+
+  // 送信者ID ログインユーザーの場合のみ
+  senderId?: string;
+
+  // 質問本文
+  content: string;
+
+  attachedImageList?: ImageFile[];
+
+  // 回答
+  answer?: Answer;
+
   isAnonymous: boolean;
   ...Timestamps;
 }
 
-/**
- * 質問詳細（受信者視点）
- */
-model QuestionDetail extends Question {
-  recipient: PublicUserInfo;
-  sender?: PublicUserInfo; // ログインユーザーの場合のみ
-  answer?: Answer;
-}
+// /**
+//  * 質問詳細（受信者視点）
+//  */
+// model QuestionDetail extends Question {
+//   recipient: PublicUserInfo;
+//   sender?: PublicUserInfo; // ログインユーザーの場合のみ
+// }
 
 /**
  * 回答
@@ -47,7 +57,7 @@ model Answer {
   id: string;
   questionId: string;
   content: string;
-  attachedImage?: ImageFile;
+  attachedImageList?: ImageFile[];
   isPublic: boolean;
   ...Timestamps;
 }
@@ -59,13 +69,13 @@ model PublicQA {
   id: string;
   question: {
     content: string;
-    attachedImage?: ImageFile;
+    attachedImageList?: ImageFile[];
     isAnonymous: boolean;
     createdAt: utcDateTime;
   };
   answer: {
     content: string;
-    attachedImage?: ImageFile;
+    attachedImageList?: ImageFile[];
     createdAt: utcDateTime;
   };
   answeredBy: PublicUserInfo;
@@ -76,7 +86,7 @@ model PublicQA {
  */
 model QuestionCreateRequest {
   content: string;
-  attachedImageId?: string;
+  attachedImageIdList?: string[];
   recipientId: string;
 }
 

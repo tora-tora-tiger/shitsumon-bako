@@ -99,8 +99,8 @@ model LoginRequest {
 }
 
 union Identificator {
-  displayId: string;
-  email: string;
+  displayId: string,
+  email: string,
 }
 
 /**
