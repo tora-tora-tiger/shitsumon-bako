@@ -1,44 +1,29 @@
 import "@typespec/http";
+import "@typespec/rest";
+import "@typespec/openapi3";
+import "./models/common.tsp";
+import "./models/user.tsp";
+import "./models/question.tsp";
+import "./routes/users.tsp";
+import "./routes/questions.tsp";
+import "./routes/files.tsp";
 
-using Http;
-@service(#{ title: "Widget Service" })
-namespace DemoService;
+using TypeSpec.Http;
+using TypeSpec.Rest;
 
-model Widget {
-  id: string;
-  weight: int32;
-  color: "red" | "blue";
-}
+/**
+ * 質問箱サービス API
+ */
+@service
+@server("http://localhost:8080", "Development server")
+@server("https://api.shitsumon-bako.com", "Production server")
+namespace ShitsumonBako;
 
-model WidgetList {
-  items: Widget[];
-}
-
+/**
+ * 共通エラーハンドリング
+ */
 @error
 model Error {
   code: int32;
   message: string;
-}
-
-model AnalyzeResult {
-  id: string;
-  analysis: string;
-}
-
-@route("/widgets")
-@tag("Widgets")
-interface Widgets {
-  /** List widgets */
-  @get list(): WidgetList | Error;
-  /** Read widgets */
-  @get read(@path id: string): Widget | Error;
-  /** Create a widget */
-  @post create(@body body: Widget): Widget | Error;
-  /** Update a widget */
-  @patch update(@path id: string, @body body: MergePatchUpdate<Widget>): Widget | Error;
-  /** Delete a widget */
-  @delete delete(@path id: string): void | Error;
-
-  /** Analyze a widget */
-  @route("{id}/analyze") @post analyze(@path id: string): AnalyzeResult | Error;
 }
