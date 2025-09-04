@@ -38,15 +38,16 @@ model PublicUserInfo {
 /**
  * プロフィール項目ベース
  */
-model ProfileFieldBase {
+model ProfileBase {
   id: string;
-  type: ProfileFieldType;
+  type: ProfileType;
   name: string;
   value: string;
   order: int32;
+  ...Timestamps;
 }
 
-union ProfileFieldType {
+union ProfileType {
   "url",
   "text",
   "email",
@@ -55,17 +56,17 @@ union ProfileFieldType {
 /**
  * プロフィール項目： Twitter
  */
-model ProfileFieltTwitter extends ProfileFieldBase {
+model ProfileTwitter extends ProfileBase {
   type: "text";
   name: "Twitter";
 }
 
-model ProfileFieldSite extends ProfileFieldBase {
+model ProfileSite extends ProfileBase {
   type: "url";
   name: "Webサイト";
 }
 
-model ProfileFieldEmail extends ProfileFieldBase {
+model ProfileEmail extends ProfileBase {
   type: "email";
   name: "メールアドレス";
 }
@@ -74,9 +75,9 @@ model ProfileFieldEmail extends ProfileFieldBase {
  * プロフィール項目
  */
 union ProfileField {
-  ProfileFieltTwitter,
-  ProfileFieldSite,
-  ProfileFieldEmail,
+  ProfileTwitter,
+  ProfileSite,
+  ProfileEmail,
 }
 
 /**
@@ -93,8 +94,13 @@ model UserRegistrationRequest {
  * ログインリクエスト
  */
 model LoginRequest {
-  email: string;
+  id: Identificator;
   password: string;
+}
+
+model Identificator {
+  displayId: string;
+  email: string;
 }
 
 /**
