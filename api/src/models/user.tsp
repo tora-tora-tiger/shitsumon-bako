@@ -13,8 +13,10 @@ namespace ShitsumonBako;
 model User {
   // 内部ID
   id: string;
+
   // ユーザーID（表示用、一意）
   displayId: string;
+
   email: string;
   displayName: string;
   iconImage?: ImageFile;
@@ -34,10 +36,11 @@ model PublicUserInfo {
 }
 
 /**
- * プロフィール項目
+ * プロフィール項目ベース
  */
-model ProfileField {
+model ProfileFieldBase {
   id: string;
+  type: ProfileFieldType;
   name: string;
   value: string;
   order: int32;
@@ -45,7 +48,35 @@ model ProfileField {
 
 union ProfileFieldType {
   "url",
+  "text",
+  "email",
+}
 
+/**
+ * プロフィール項目： Twitter
+ */
+model ProfileFieltTwitter extends ProfileFieldBase {
+  type: "text";
+  name: "Twitter";
+}
+
+model ProfileFieldSite extends ProfileFieldBase {
+  type: "url";
+  name: "Webサイト";
+}
+
+model ProfileFieldEmail extends ProfileFieldBase {
+  type: "email";
+  name: "メールアドレス";
+}
+
+/**
+ * プロフィール項目
+ */
+union ProfileField {
+  ProfileFieltTwitter,
+  ProfileFieldSite,
+  ProfileFieldEmail,
 }
 
 /**
@@ -54,6 +85,7 @@ union ProfileFieldType {
 model UserRegistrationRequest {
   email: string;
   password: string;
+  displayId: string;
   displayName: string;
 }
 

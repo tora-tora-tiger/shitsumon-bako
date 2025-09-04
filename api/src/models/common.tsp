@@ -29,6 +29,7 @@ model ErrorDetails {
  */
 model PaginationQuery {
   @query page?: int32 = 1;
+
   // 1ページあたりの件数
   @query limit?: int32 = 20;
 }
