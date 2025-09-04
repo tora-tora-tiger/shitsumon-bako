@@ -24,31 +24,36 @@ model Question {
   id: string;
   status: QuestionStatus;
 
-  // 受信者ID
+  /**
+   * 受信者ID
+   */
   recipientId: string;
 
-  // 送信者ID ログインユーザーの場合のみ
+  /**
+   * 送信者ID ログインユーザーの場合のみ
+   */
   senderId?: string;
 
-  // 質問本文
+  /** 
+   * 質問本文
+   */
   content: string;
 
   attachedImageList?: ImageFile[];
 
-  // 回答
   answer?: Answer;
 
   isAnonymous: boolean;
   ...Timestamps;
 }
 
-// /**
-//  * 質問詳細（受信者視点）
-//  */
-// model QuestionDetail extends Question {
-//   recipient: PublicUserInfo;
-//   sender?: PublicUserInfo; // ログインユーザーの場合のみ
-// }
+/**
+ * 質問詳細（受信者視点）
+ */
+model QuestionDetail extends Question {
+  recipient: PublicUserInfo;
+  sender?: PublicUserInfo; // ログインユーザーの場合のみ
+}
 
 /**
  * 回答

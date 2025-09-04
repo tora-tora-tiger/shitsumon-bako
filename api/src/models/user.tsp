@@ -11,10 +11,14 @@ namespace ShitsumonBako;
  * ユーザープロフィール情報
  */
 model User {
-  // 内部ID
+  /**
+   * 内部ID
+   */
   id: string;
 
-  // ユーザーID（表示用、一意）
+  /** 
+   * ユーザーID（表示用、一意）
+   */
   displayId: string;
 
   email: string;
