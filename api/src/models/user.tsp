@@ -33,7 +33,7 @@ model User {
  * 公開用ユーザー情報
  */
 model PublicUserInfo {
-  displayid: string;
+  displayId: string;
   displayName: string;
   iconImage?: ImageFile;
   profileFields?: ProfileField[];
