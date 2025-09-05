@@ -1,0 +1,5 @@
+package: schema
+generate:
+  - models
+  - echo-server
+output: pkg/schema/schema.gen.go
