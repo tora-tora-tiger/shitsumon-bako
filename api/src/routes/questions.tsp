@@ -26,13 +26,13 @@ interface Questions {
   @summary("新しい質問を送信")
   @useAuth([])
   create(@body request: QuestionCreateRequest): {
-    @statusCode _: 201;
+    @statusCode statusCode: 201;
     @body response: ApiResponse<Question>;
   } | {
-    @statusCode _: 400;
+    @statusCode statusCode: 400;
     @body error: ApiResponse<ErrorDetails>;
   } | {
-    @statusCode _: 403;
+    @statusCode statusCode: 403;
     @body error: ApiResponse<ErrorDetails>;
   };
 
@@ -47,10 +47,10 @@ interface Questions {
     ...PaginationQuery,
     ...QuestionFilter,
   ): {
-    @statusCode _: 200;
+    @statusCode statusCode: 200;
     @body response: PaginatedResponse<QuestionDetail>;
   } | {
-    @statusCode _: 401;
+    @statusCode statusCode: 401;
     @body error: ApiResponse<ErrorDetails>;
   };
 
@@ -65,10 +65,10 @@ interface Questions {
     ...PaginationQuery,
     ...SentQuestionFilter,
   ): {
-    @statusCode _: 200;
+    @statusCode statusCode: 200;
     @body response: PaginatedResponse<QuestionDetail>;
   } | {
-    @statusCode _: 401;
+    @statusCode statusCode: 401;
     @body error: ApiResponse<ErrorDetails>;
   };
 
@@ -81,19 +81,19 @@ interface Questions {
   @summary("質問詳細情報取得")
   getQuestion(@path questionId: string):
     | {
-        @statusCode _: 200;
+        @statusCode statusCode: 200;
         @body response: ApiResponse<QuestionDetail>;
       }
     | {
-        @statusCode _: 401;
+        @statusCode statusCode: 401;
         @body error: ApiResponse<ErrorDetails>;
       }
     | {
-        @statusCode _: 404;
+        @statusCode statusCode: 404;
         @body error: ApiResponse<ErrorDetails>;
       }
     | {
-        @statusCode _: 403;
+        @statusCode statusCode: 403;
         @body error: ApiResponse<ErrorDetails>;
       };
 
@@ -109,23 +109,23 @@ interface Questions {
     @body request: QuestionUpdateRequest,
   ):
     | {
-        @statusCode _: 200;
+        @statusCode statusCode: 200;
         @body response: ApiResponse<Question>;
       }
     | {
-        @statusCode _: 401;
+        @statusCode statusCode: 401;
         @body error: ApiResponse<ErrorDetails>;
       }
     | {
-        @statusCode _: 404;
+        @statusCode statusCode: 404;
         @body error: ApiResponse<ErrorDetails>;
       }
     | {
-        @statusCode _: 403;
+        @statusCode statusCode: 403;
         @body error: ApiResponse<ErrorDetails>;
       }
     | {
-        @statusCode _: 400;
+        @statusCode statusCode: 400;
         @body error: ApiResponse<ErrorDetails>;
       };
 
@@ -138,19 +138,19 @@ interface Questions {
   @summary("質問を削除")
   deleteQuestion(@path questionId: string):
     | {
-        @statusCode _: 200;
+        @statusCode statusCode: 200;
         @body response: ApiResponse<{}>;
       }
     | {
-        @statusCode _: 401;
+        @statusCode statusCode: 401;
         @body error: ApiResponse<ErrorDetails>;
       }
     | {
-        @statusCode _: 404;
+        @statusCode statusCode: 404;
         @body error: ApiResponse<ErrorDetails>;
       }
     | {
-        @statusCode _: 403;
+        @statusCode statusCode: 403;
         @body error: ApiResponse<ErrorDetails>;
       };
 
@@ -163,19 +163,19 @@ interface Questions {
   @summary("質問を既読にマーク")
   markAsRead(@path questionId: string):
     | {
-        @statusCode _: 200;
+        @statusCode statusCode: 200;
         @body response: ApiResponse<Question>;
       }
     | {
-        @statusCode _: 401;
+        @statusCode statusCode: 401;
         @body error: ApiResponse<ErrorDetails>;
       }
     | {
-        @statusCode _: 404;
+        @statusCode statusCode: 404;
         @body error: ApiResponse<ErrorDetails>;
       }
     | {
-        @statusCode _: 403;
+        @statusCode statusCode: 403;
         @body error: ApiResponse<ErrorDetails>;
       };
 
@@ -191,23 +191,23 @@ interface Questions {
     @body request: AnswerCreateRequest,
   ):
     | {
-        @statusCode _: 201;
+        @statusCode statusCode: 201;
         @body response: ApiResponse<Answer>;
       }
     | {
-        @statusCode _: 401;
+        @statusCode statusCode: 401;
         @body error: ApiResponse<ErrorDetails>;
       }
     | {
-        @statusCode _: 404;
+        @statusCode statusCode: 404;
         @body error: ApiResponse<ErrorDetails>;
       }
     | {
-        @statusCode _: 403;
+        @statusCode statusCode: 403;
         @body error: ApiResponse<ErrorDetails>;
       }
     | {
-        @statusCode _: 400;
+        @statusCode statusCode: 400;
         @body error: ApiResponse<ErrorDetails>;
       };
 
@@ -225,10 +225,10 @@ interface Questions {
     @query sortBy?: "createdAt" | "updatedAt" = "createdAt",
     @query sortOrder?: SortOrder = SortOrder.desc,
   ): {
-    @statusCode _: 200;
+    @statusCode statusCode: 200;
     @body response: PaginatedResponse<PublicQA>;
   } | {
-    @statusCode _: 404;
+    @statusCode statusCode: 404;
     @body error: ApiResponse<ErrorDetails>;
   };
 
@@ -241,10 +241,10 @@ interface Questions {
   @summary("不適切なコンテンツを通報")
   @useAuth([])
   report(@body request: ReportRequest): {
-    @statusCode _: 201;
+    @statusCode statusCode: 201;
     @body response: ApiResponse<{}>;
   } | {
-    @statusCode _: 400;
+    @statusCode statusCode: 400;
     @body error: ApiResponse<ErrorDetails>;
   };
 }

@@ -25,13 +25,13 @@ interface Users {
   @summary("新規ユーザー登録")
   @useAuth([])
   register(@body request: UserRegistrationRequest): {
-    @statusCode _: 201;
+    @statusCode statusCode: 201;
     @body response: ApiResponse<User>;
   } | {
-    @statusCode _: 400;
+    @statusCode statusCode: 400;
     @body error: ApiResponse<ErrorDetails>;
   } | {
-    @statusCode _: 409;
+    @statusCode statusCode: 409;
     @body error: ApiResponse<ErrorDetails>;
   };
 
@@ -44,10 +44,10 @@ interface Users {
   @summary("ユーザーログイン")
   @useAuth([])
   login(@body request: LoginRequest): {
-    @statusCode _: 200;
+    @statusCode statusCode: 200;
     @body response: ApiResponse<LoginResponse>;
   } | {
-    @statusCode _: 401;
+    @statusCode statusCode: 401;
     @body error: ApiResponse<ErrorDetails>;
   };
 
@@ -59,10 +59,10 @@ interface Users {
   @operationId("logoutUser")
   @summary("ユーザーログアウト")
   logout(): {
-    @statusCode _: 200;
+    @statusCode statusCode: 200;
     @body response: ApiResponse<{}>;
   } | {
-    @statusCode _: 401;
+    @statusCode statusCode: 401;
     @body error: ApiResponse<ErrorDetails>;
   };
 
@@ -74,10 +74,10 @@ interface Users {
   @operationId("getCurrentUser")
   @summary("ログイン中のユーザー情報取得")
   getCurrentUser(): {
-    @statusCode _: 200;
+    @statusCode statusCode: 200;
     @body response: ApiResponse<User>;
   } | {
-    @statusCode _: 401;
+    @statusCode statusCode: 401;
     @body error: ApiResponse<ErrorDetails>;
   };
 
@@ -91,13 +91,13 @@ interface Users {
   updateProfile(
     @body request: ProfileUpdateRequest,
   ): {
-    @statusCode _: 200;
+    @statusCode statusCode: 200;
     @body response: ApiResponse<User>;
   } | {
-    @statusCode _: 401;
+    @statusCode statusCode: 401;
     @body error: ApiResponse<ErrorDetails>;
   } | {
-    @statusCode _: 400;
+    @statusCode statusCode: 400;
     @body error: ApiResponse<ErrorDetails>;
   };
 
@@ -110,10 +110,10 @@ interface Users {
   @summary("公開ユーザー情報取得")
   @useAuth([])
   getPublicUserInfo(@path userId: string): {
-    @statusCode _: 200;
+    @statusCode statusCode: 200;
     @body response: ApiResponse<PublicUserInfo>;
   } | {
-    @statusCode _: 404;
+    @statusCode statusCode: 404;
     @body error: ApiResponse<ErrorDetails>;
   };
 
@@ -129,13 +129,13 @@ interface Users {
       userId: string;
     },
   ): {
-    @statusCode _: 201;
+    @statusCode statusCode: 201;
     @body response: ApiResponse<BlockedUser>;
   } | {
-    @statusCode _: 401;
+    @statusCode statusCode: 401;
     @body error: ApiResponse<ErrorDetails>;
   } | {
-    @statusCode _: 400;
+    @statusCode statusCode: 400;
     @body error: ApiResponse<ErrorDetails>;
   };
 
@@ -147,10 +147,10 @@ interface Users {
   @operationId("getBlockedUsers")
   @summary("ブロックしたユーザー一覧取得")
   getBlockedUsers(...PaginationQuery): {
-    @statusCode _: 200;
+    @statusCode statusCode: 200;
     @body response: PaginatedResponse<BlockedUser>;
   } | {
-    @statusCode _: 401;
+    @statusCode statusCode: 401;
     @body error: ApiResponse<ErrorDetails>;
   };
 
@@ -162,13 +162,13 @@ interface Users {
   @operationId("unblockUser")
   @summary("ユーザーのブロックを解除")
   unblockUser(@path userId: string): {
-    @statusCode _: 200;
+    @statusCode statusCode: 200;
     @body response: ApiResponse<{}>;
   } | {
-    @statusCode _: 401;
+    @statusCode statusCode: 401;
     @body error: ApiResponse<ErrorDetails>;
   } | {
-    @statusCode _: 404;
+    @statusCode statusCode: 404;
     @body error: ApiResponse<ErrorDetails>;
   };
 
@@ -182,13 +182,13 @@ interface Users {
   addNgWord(
     @body request: NgWordCreateRequest,
   ): {
-    @statusCode _: 201;
+    @statusCode statusCode: 201;
     @body response: ApiResponse<NgWord>;
   } | {
-    @statusCode _: 401;
+    @statusCode statusCode: 401;
     @body error: ApiResponse<ErrorDetails>;
   } | {
-    @statusCode _: 400;
+    @statusCode statusCode: 400;
     @body error: ApiResponse<ErrorDetails>;
   };
 
@@ -200,10 +200,10 @@ interface Users {
   @operationId("getNgWords")
   @summary("NGワード一覧取得")
   getNgWords(...PaginationQuery): {
-    @statusCode _: 200;
+    @statusCode statusCode: 200;
     @body response: PaginatedResponse<NgWord>;
   } | {
-    @statusCode _: 401;
+    @statusCode statusCode: 401;
     @body error: ApiResponse<ErrorDetails>;
   };
 
@@ -215,13 +215,13 @@ interface Users {
   @operationId("deleteNgWord")
   @summary("NGワードを削除")
   deleteNgWord(@path ngWordId: string): {
-    @statusCode _: 200;
+    @statusCode statusCode: 200;
     @body response: ApiResponse<{}>;
   } | {
-    @statusCode _: 401;
+    @statusCode statusCode: 401;
     @body error: ApiResponse<ErrorDetails>;
   } | {
-    @statusCode _: 404;
+    @statusCode statusCode: 404;
     @body error: ApiResponse<ErrorDetails>;
   };
 }

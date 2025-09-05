@@ -26,19 +26,19 @@ interface Files {
   @useAuth([])
   uploadImage(@body image: bytes):
     | {
-        @statusCode _: 201;
+        @statusCode statusCode: 201;
         @body response: ApiResponse<ImageFile>;
       }
     | {
-        @statusCode _: 400;
+        @statusCode statusCode: 400;
         @body error: ApiResponse<ErrorDetails>;
       }
     | {
-        @statusCode _: 413;
+        @statusCode statusCode: 413;
         @body error: ApiResponse<ErrorDetails>;
       }
     | {
-        @statusCode _: 415;
+        @statusCode statusCode: 415;
         @body error: ApiResponse<ErrorDetails>;
       };
 
@@ -51,11 +51,11 @@ interface Files {
   @summary("画像ファイルを取得")
   @useAuth([])
   getImage(@path imageId: string): {
-    @statusCode _: 200;
+    @statusCode statusCode: 200;
     @header `content-type`: string;
     @body content: bytes;
   } | {
-    @statusCode _: 404;
+    @statusCode statusCode: 404;
     @body error: ApiResponse<ErrorDetails>;
   };
 
@@ -68,19 +68,19 @@ interface Files {
   @summary("画像ファイルを削除")
   deleteImage(@path imageId: string):
     | {
-        @statusCode _: 200;
+        @statusCode statusCode: 200;
         @body response: ApiResponse<{}>;
       }
     | {
-        @statusCode _: 401;
+        @statusCode statusCode: 401;
         @body error: ApiResponse<ErrorDetails>;
       }
     | {
-        @statusCode _: 404;
+        @statusCode statusCode: 404;
         @body error: ApiResponse<ErrorDetails>;
       }
     | {
-        @statusCode _: 403;
+        @statusCode statusCode: 403;
         @body error: ApiResponse<ErrorDetails>;
       };
 }
