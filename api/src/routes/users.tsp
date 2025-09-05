@@ -88,9 +88,7 @@ interface Users {
   @route("/me")
   @operationId("updateUserProfile")
   @summary("ユーザープロフィール更新")
-  updateProfile(
-    @body request: ProfileUpdateRequest,
-  ): {
+  updateProfile(@body request: ProfileUpdateRequest): {
     @statusCode statusCode: 200;
     @body response: ApiResponse<User>;
   } | {
@@ -179,9 +177,7 @@ interface Users {
   @route("/ng-words")
   @operationId("addNgWord")
   @summary("NGワードを追加")
-  addNgWord(
-    @body request: NgWordCreateRequest,
-  ): {
+  addNgWord(@body request: NgWordCreateRequest): {
     @statusCode statusCode: 201;
     @body response: ApiResponse<NgWord>;
   } | {

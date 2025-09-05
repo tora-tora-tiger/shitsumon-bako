@@ -43,10 +43,7 @@ interface Questions {
   @route("/received")
   @operationId("getReceivedQuestions")
   @summary("受信した質問一覧取得")
-  getReceived(
-    ...PaginationQuery,
-    ...QuestionFilter,
-  ): {
+  getReceived(...PaginationQuery, ...QuestionFilter): {
     @statusCode statusCode: 200;
     @body response: PaginatedResponse<QuestionDetail>;
   } | {
@@ -61,10 +58,7 @@ interface Questions {
   @route("/sent")
   @operationId("getSentQuestions")
   @summary("送信した質問一覧取得")
-  getSent(
-    ...PaginationQuery,
-    ...SentQuestionFilter,
-  ): {
+  getSent(...PaginationQuery, ...SentQuestionFilter): {
     @statusCode statusCode: 200;
     @body response: PaginatedResponse<QuestionDetail>;
   } | {
@@ -186,10 +180,7 @@ interface Questions {
   @route("/{questionId}/answer")
   @operationId("createAnswer")
   @summary("質問に回答を作成")
-  createAnswer(
-    @path questionId: string,
-    @body request: AnswerCreateRequest,
-  ):
+  createAnswer(@path questionId: string, @body request: AnswerCreateRequest):
     | {
         @statusCode statusCode: 201;
         @body response: ApiResponse<Answer>;
