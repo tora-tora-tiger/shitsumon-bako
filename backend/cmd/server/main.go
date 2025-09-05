@@ -3,8 +3,12 @@ package main
 import (
 	"net/http"
 	
+	"backend/pkg/schema"
+	
 	"github.com/labstack/echo/v4"
 )
+
+type ApiServer struct {}
 
 func main() {
 	e := echo.New()
