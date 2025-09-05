@@ -84,7 +84,7 @@ interface Users {
   /**
    * プロフィール更新
    */
-  @patch
+  @patch(#{implicitOptionality: true})
   @route("/me")
   @operationId("updateUserProfile")
   @summary("ユーザープロフィール更新")

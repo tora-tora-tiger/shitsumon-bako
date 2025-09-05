@@ -94,7 +94,7 @@ interface Questions {
   /**
    * 質問編集
    */
-  @patch
+  @patch(#{implicitOptionality: true})
   @route("/{questionId}")
   @operationId("updateQuestion")
   @summary("質問内容を編集")
@@ -151,7 +151,7 @@ interface Questions {
   /**
    * 質問を既読にする
    */
-  @patch
+  @patch(#{implicitOptionality: true})
   @route("/{questionId}/read")
   @operationId("markQuestionAsRead")
   @summary("質問を既読にマーク")
