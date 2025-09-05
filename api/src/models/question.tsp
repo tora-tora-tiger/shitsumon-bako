@@ -106,7 +106,7 @@ model QuestionCreateRequest {
  */
 model AnswerCreateRequest {
   content: string;
-  attachedImageId?: string;
+  attachedImageIdList?: string[];
   isPublic: boolean;
 }
 
@@ -115,7 +115,7 @@ model AnswerCreateRequest {
  */
 model QuestionUpdateRequest {
   content: string;
-  attachedImageId?: string;
+  attachedImageIdList?: string[];
 }
 
 /**
