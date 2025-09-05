@@ -22,6 +22,15 @@ using TypeSpec.OpenAPI;
 namespace ShitsumonBako;
 
 /**
+ * JWT Bearer Token認証
+ */
+model BearerAuth {
+  type: "http";
+  scheme: "bearer";
+  bearerFormat: "JWT";
+}
+
+/**
  * 共通エラーハンドリング
  */
 @error

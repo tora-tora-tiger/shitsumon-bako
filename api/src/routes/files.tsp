@@ -14,6 +14,7 @@ namespace ShitsumonBako;
  */
 @tag("Files")
 @route("/api/files")
+@useAuth(BearerAuth)
 interface Files {
   /**
    * 画像ファイルアップロード
@@ -22,7 +23,8 @@ interface Files {
   @route("/images")
   @operationId("uploadImage")
   @summary("画像ファイルをアップロード")
-  uploadImage(@header authorization?: string, @body image: bytes):
+  @useAuth([])
+  uploadImage(@body image: bytes):
     | {
         @statusCode _: 201;
         @body response: ApiResponse<ImageFile>;
@@ -47,6 +49,7 @@ interface Files {
   @route("/images/{imageId}")
   @operationId("getImage")
   @summary("画像ファイルを取得")
+  @useAuth([])
   getImage(@path imageId: string): {
     @statusCode _: 200;
     @header `content-type`: string;
@@ -63,7 +66,7 @@ interface Files {
   @route("/images/{imageId}")
   @operationId("deleteImage")
   @summary("画像ファイルを削除")
-  deleteImage(@header authorization: string, @path imageId: string):
+  deleteImage(@path imageId: string):
     | {
         @statusCode _: 200;
         @body response: ApiResponse<{}>;
