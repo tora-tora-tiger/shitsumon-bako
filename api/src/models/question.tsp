@@ -17,10 +17,7 @@ enum QuestionStatus {
   answered: "answered",
 }
 
-/**
- * 質問
- */
-model Question {
+model QuestionBase {
   id: string;
   status: QuestionStatus;
 
@@ -34,17 +31,26 @@ model Question {
    */
   senderId?: string;
 
-  /** 
+  /**
    * 質問本文
    */
   content: string;
 
   attachedImageList?: ImageFile[];
-
-  answer?: Answer;
-
   isAnonymous: boolean;
   ...Timestamps;
+}
+
+/**
+ * 質問を送信したときのレスポンス．　Answerがない
+ */
+alias QuestionCreateResponse = QuestionBase;
+
+/**
+ * 質問
+ */
+model Question extends QuestionBase {
+  answer?: Answer;
 }
 
 /**

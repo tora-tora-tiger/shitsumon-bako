@@ -16,7 +16,7 @@ model User {
    */
   id: string;
 
-  /** 
+  /**
    * ユーザーID（表示用、一意）
    */
   displayId: string;

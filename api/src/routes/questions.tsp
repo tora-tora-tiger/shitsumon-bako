@@ -27,7 +27,7 @@ interface Questions {
   @useAuth([])
   create(@body request: QuestionCreateRequest): {
     @statusCode statusCode: 201;
-    @body response: ApiResponse<Question>;
+    @body response: ApiResponse<QuestionCreateResponse>;
   } | {
     @statusCode statusCode: 400;
     @body error: ApiResponse<ErrorDetails>;
@@ -45,7 +45,7 @@ interface Questions {
   @summary("受信した質問一覧取得")
   getReceived(...PaginationQuery, ...QuestionFilter): {
     @statusCode statusCode: 200;
-    @body response: PaginatedResponse<QuestionDetail>;
+    @body response: PaginatedResponse<Question>;
   } | {
     @statusCode statusCode: 401;
     @body error: ApiResponse<ErrorDetails>;
@@ -60,7 +60,7 @@ interface Questions {
   @summary("送信した質問一覧取得")
   getSent(...PaginationQuery, ...SentQuestionFilter): {
     @statusCode statusCode: 200;
-    @body response: PaginatedResponse<QuestionDetail>;
+    @body response: PaginatedResponse<Question>;
   } | {
     @statusCode statusCode: 401;
     @body error: ApiResponse<ErrorDetails>;
