@@ -46,11 +46,11 @@ type ImageFile struct {
 
 type Question struct {
 	TimeStamp
-	Id                string      `gorm:"primaryKey;type:uuid"`
-	Status			  string      `gorm:"type:text;not null;default:'unread'" sql:"type:ENUM('unread', 'read', 'answered')"`
-	Content           string      `gorm:"type:text;not null"`
-	IsAnonymous       bool        `gorm:"not null;default:true"`
-	SenderId          *string     `gorm:"type:uuid;index"`
-	RecipientId       string      `gorm:"type:uuid;index;not null"`
-	AttachedImageList []ImageFile `gorm:"foreignKey:QuestionId"`//;constraint:OnDelete:CASCADE"`
+	Id                string       `gorm:"primaryKey;type:uuid"`
+	Status            string       `gorm:"type:text;not null;default:'unread'" sql:"type:ENUM('unread', 'read', 'answered')"`
+	Content           string       `gorm:"type:text;not null"`
+	IsAnonymous       bool         `gorm:"not null;default:true"`
+	SenderId          *string      `gorm:"type:uuid;index"`
+	RecipientId       string       `gorm:"type:uuid;index;not null"`
+	AttachedImageList *[]ImageFile `gorm:"foreignKey:QuestionId"` //;constraint:OnDelete:CASCADE"`
 }
