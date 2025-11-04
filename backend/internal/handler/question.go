@@ -11,6 +11,8 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+var DB = db.DB
+
 type QuestionHandler struct{}
 
 func NewQuestionHandler() *QuestionHandler {
@@ -18,16 +20,12 @@ func NewQuestionHandler() *QuestionHandler {
 }
 
 func (h *QuestionHandler) CreateQuestion(ctx echo.Context) error {
-	DB := db.DB
-
 	req := schema.QuestionCreateRequest{}
 	if err := ctx.Bind(&req); err != nil {
 		return ctx.JSON(http.StatusBadRequest, &schema.ErrorDetails{
 			Message: "Invalid request payload",
 		})
 	}
-
-	fmt.Println(req)
 
 	q := db.Question{
 		Content:     req.Content,
@@ -54,6 +52,57 @@ func (h *QuestionHandler) CreateQuestion(ctx echo.Context) error {
 }
 
 func (h *QuestionHandler) GetReceivedQuestions(ctx echo.Context, params schema.GetReceivedQuestionsParams) error {
+	// debug
+	if params.Limit != nil {
+		fmt.Printf("limit: %v\n", *params.Limit)
+	} else {
+		fmt.Println("limit: nil")
+	}
+	if params.Page != nil {
+		fmt.Printf("page: %v\n", *params.Page)
+	} else {
+		fmt.Println("page: nil")
+	}
+	if params.Status != nil {
+		fmt.Printf("status: %v\n", *params.Status)
+	} else {
+		fmt.Println("status: nil")
+	}
+	if params.SortBy != nil {
+		fmt.Printf("sortBy: %v\n", *params.SortBy)
+	} else {
+		fmt.Println("sortBy: nil")
+	}
+	if params.SortOrder != nil {
+		fmt.Printf("sortOrder: %v\n", *params.SortOrder)
+	} else {
+		fmt.Println("sortOrder: nil")
+	}
+	p := schema.GetReceivedQuestionsParams(params)
+	fmt.Printf("params: %+v\n", p)
+	// var questions []db.Question
+
+	// クエリを作る
+	// var order string
+	// if params.SortBy != nil {
+	// 	field := "createdAt"
+		
+	// 	if params.SortBy != nil && *params.SortBy != schema.GetReceivedQuestionsParamsSortBy {
+	// 		field = *params.SortBy
+	// 	}
+	// 	orderDir := ""
+	// 	if params.SortOrder != nil {
+	// 		orderDir = *params.SortOrder
+	// 	}
+	// 	order = fmt.Sprintf("%s %s", field, orderDir)
+	// }
+	// var query string
+	// if params.Status != nil {
+	// 	query = fmt.Sprintf("status = '%s'", *params.Status)
+	// }
+
+	// error := DB.Where(query).Order(order).Find(&questions)
+
 	return ctx.JSON(http.StatusNotImplemented, map[string]string{"message": "Not implemented yet"})
 }
 
