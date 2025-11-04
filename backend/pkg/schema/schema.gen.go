@@ -4,13 +4,16 @@
 package schema
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/oapi-codegen/runtime"
+	strictecho "github.com/oapi-codegen/runtime/strictmiddleware/echo"
 )
 
 const (
@@ -1179,4 +1182,1927 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 	router.DELETE(baseURL+"/api/users/ng-words/:ngWordId", wrapper.DeleteNgWord)
 	router.GET(baseURL+"/api/users/:userId", wrapper.GetPublicUserInfo)
 
+}
+
+type UploadImageRequestObject struct {
+	Body io.Reader
+}
+
+type UploadImageResponseObject interface {
+	VisitUploadImageResponse(w http.ResponseWriter) error
+}
+
+type UploadImage201JSONResponse struct {
+	// Data 画像ファイル情報
+	Data    *ImageFile `json:"data,omitempty"`
+	Message *string    `json:"message,omitempty"`
+}
+
+func (response UploadImage201JSONResponse) VisitUploadImageResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UploadImage400JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response UploadImage400JSONResponse) VisitUploadImageResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UploadImage413JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response UploadImage413JSONResponse) VisitUploadImageResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(413)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UploadImage415JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response UploadImage415JSONResponse) VisitUploadImageResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(415)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeleteImageRequestObject struct {
+	ImageId string `json:"imageId"`
+}
+
+type DeleteImageResponseObject interface {
+	VisitDeleteImageResponse(w http.ResponseWriter) error
+}
+
+type DeleteImage200JSONResponse struct {
+	Data    *map[string]interface{} `json:"data,omitempty"`
+	Message *string                 `json:"message,omitempty"`
+}
+
+func (response DeleteImage200JSONResponse) VisitDeleteImageResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeleteImage401JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response DeleteImage401JSONResponse) VisitDeleteImageResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeleteImage403JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response DeleteImage403JSONResponse) VisitDeleteImageResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeleteImage404JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response DeleteImage404JSONResponse) VisitDeleteImageResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetImageRequestObject struct {
+	ImageId string `json:"imageId"`
+}
+
+type GetImageResponseObject interface {
+	VisitGetImageResponse(w http.ResponseWriter) error
+}
+
+type GetImage200AsteriskResponse struct {
+	Body          io.Reader
+	ContentType   string
+	ContentLength int64
+}
+
+func (response GetImage200AsteriskResponse) VisitGetImageResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", response.ContentType)
+	if response.ContentLength != 0 {
+		w.Header().Set("Content-Length", fmt.Sprint(response.ContentLength))
+	}
+	w.WriteHeader(200)
+
+	if closer, ok := response.Body.(io.ReadCloser); ok {
+		defer closer.Close()
+	}
+	_, err := io.Copy(w, response.Body)
+	return err
+}
+
+type GetImage404JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response GetImage404JSONResponse) VisitGetImageResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CreateQuestionRequestObject struct {
+	Body *CreateQuestionJSONRequestBody
+}
+
+type CreateQuestionResponseObject interface {
+	VisitCreateQuestionResponse(w http.ResponseWriter) error
+}
+
+type CreateQuestion201JSONResponse struct {
+	Data    *QuestionBase `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response CreateQuestion201JSONResponse) VisitCreateQuestionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CreateQuestion400JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response CreateQuestion400JSONResponse) VisitCreateQuestionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CreateQuestion403JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response CreateQuestion403JSONResponse) VisitCreateQuestionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetPublicQAsRequestObject struct {
+	UserId string `json:"userId"`
+	Params GetPublicQAsParams
+}
+
+type GetPublicQAsResponseObject interface {
+	VisitGetPublicQAsResponse(w http.ResponseWriter) error
+}
+
+type GetPublicQAs200JSONResponse struct {
+	Data       []PublicQA `json:"data"`
+	Pagination struct {
+		Limit      int32 `json:"limit"`
+		Page       int32 `json:"page"`
+		Total      int32 `json:"total"`
+		TotalPages int32 `json:"totalPages"`
+	} `json:"pagination"`
+}
+
+func (response GetPublicQAs200JSONResponse) VisitGetPublicQAsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetPublicQAs404JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response GetPublicQAs404JSONResponse) VisitGetPublicQAsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetReceivedQuestionsRequestObject struct {
+	Params GetReceivedQuestionsParams
+}
+
+type GetReceivedQuestionsResponseObject interface {
+	VisitGetReceivedQuestionsResponse(w http.ResponseWriter) error
+}
+
+type GetReceivedQuestions200JSONResponse struct {
+	Data       []Question `json:"data"`
+	Pagination struct {
+		Limit      int32 `json:"limit"`
+		Page       int32 `json:"page"`
+		Total      int32 `json:"total"`
+		TotalPages int32 `json:"totalPages"`
+	} `json:"pagination"`
+}
+
+func (response GetReceivedQuestions200JSONResponse) VisitGetReceivedQuestionsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetReceivedQuestions401JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response GetReceivedQuestions401JSONResponse) VisitGetReceivedQuestionsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type ReportContentRequestObject struct {
+	Body *ReportContentJSONRequestBody
+}
+
+type ReportContentResponseObject interface {
+	VisitReportContentResponse(w http.ResponseWriter) error
+}
+
+type ReportContent201JSONResponse struct {
+	Data    *map[string]interface{} `json:"data,omitempty"`
+	Message *string                 `json:"message,omitempty"`
+}
+
+func (response ReportContent201JSONResponse) VisitReportContentResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type ReportContent400JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response ReportContent400JSONResponse) VisitReportContentResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetSentQuestionsRequestObject struct {
+	Params GetSentQuestionsParams
+}
+
+type GetSentQuestionsResponseObject interface {
+	VisitGetSentQuestionsResponse(w http.ResponseWriter) error
+}
+
+type GetSentQuestions200JSONResponse struct {
+	Data       []Question `json:"data"`
+	Pagination struct {
+		Limit      int32 `json:"limit"`
+		Page       int32 `json:"page"`
+		Total      int32 `json:"total"`
+		TotalPages int32 `json:"totalPages"`
+	} `json:"pagination"`
+}
+
+func (response GetSentQuestions200JSONResponse) VisitGetSentQuestionsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetSentQuestions401JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response GetSentQuestions401JSONResponse) VisitGetSentQuestionsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeleteQuestionRequestObject struct {
+	QuestionId string `json:"questionId"`
+}
+
+type DeleteQuestionResponseObject interface {
+	VisitDeleteQuestionResponse(w http.ResponseWriter) error
+}
+
+type DeleteQuestion200JSONResponse struct {
+	Data    *map[string]interface{} `json:"data,omitempty"`
+	Message *string                 `json:"message,omitempty"`
+}
+
+func (response DeleteQuestion200JSONResponse) VisitDeleteQuestionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeleteQuestion401JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response DeleteQuestion401JSONResponse) VisitDeleteQuestionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeleteQuestion403JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response DeleteQuestion403JSONResponse) VisitDeleteQuestionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeleteQuestion404JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response DeleteQuestion404JSONResponse) VisitDeleteQuestionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetQuestionDetailRequestObject struct {
+	QuestionId string `json:"questionId"`
+}
+
+type GetQuestionDetailResponseObject interface {
+	VisitGetQuestionDetailResponse(w http.ResponseWriter) error
+}
+
+type GetQuestionDetail200JSONResponse struct {
+	// Data 質問詳細（受信者視点）
+	Data    *QuestionDetail `json:"data,omitempty"`
+	Message *string         `json:"message,omitempty"`
+}
+
+func (response GetQuestionDetail200JSONResponse) VisitGetQuestionDetailResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetQuestionDetail401JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response GetQuestionDetail401JSONResponse) VisitGetQuestionDetailResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetQuestionDetail403JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response GetQuestionDetail403JSONResponse) VisitGetQuestionDetailResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetQuestionDetail404JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response GetQuestionDetail404JSONResponse) VisitGetQuestionDetailResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdateQuestionRequestObject struct {
+	QuestionId string `json:"questionId"`
+	Body       *UpdateQuestionJSONRequestBody
+}
+
+type UpdateQuestionResponseObject interface {
+	VisitUpdateQuestionResponse(w http.ResponseWriter) error
+}
+
+type UpdateQuestion200JSONResponse struct {
+	// Data 質問
+	Data    *Question `json:"data,omitempty"`
+	Message *string   `json:"message,omitempty"`
+}
+
+func (response UpdateQuestion200JSONResponse) VisitUpdateQuestionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdateQuestion400JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response UpdateQuestion400JSONResponse) VisitUpdateQuestionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdateQuestion401JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response UpdateQuestion401JSONResponse) VisitUpdateQuestionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdateQuestion403JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response UpdateQuestion403JSONResponse) VisitUpdateQuestionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdateQuestion404JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response UpdateQuestion404JSONResponse) VisitUpdateQuestionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CreateAnswerRequestObject struct {
+	QuestionId string `json:"questionId"`
+	Body       *CreateAnswerJSONRequestBody
+}
+
+type CreateAnswerResponseObject interface {
+	VisitCreateAnswerResponse(w http.ResponseWriter) error
+}
+
+type CreateAnswer201JSONResponse struct {
+	// Data 回答
+	Data    *Answer `json:"data,omitempty"`
+	Message *string `json:"message,omitempty"`
+}
+
+func (response CreateAnswer201JSONResponse) VisitCreateAnswerResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CreateAnswer400JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response CreateAnswer400JSONResponse) VisitCreateAnswerResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CreateAnswer401JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response CreateAnswer401JSONResponse) VisitCreateAnswerResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CreateAnswer403JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response CreateAnswer403JSONResponse) VisitCreateAnswerResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CreateAnswer404JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response CreateAnswer404JSONResponse) VisitCreateAnswerResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type MarkQuestionAsReadRequestObject struct {
+	QuestionId string `json:"questionId"`
+}
+
+type MarkQuestionAsReadResponseObject interface {
+	VisitMarkQuestionAsReadResponse(w http.ResponseWriter) error
+}
+
+type MarkQuestionAsRead200JSONResponse struct {
+	// Data 質問
+	Data    *Question `json:"data,omitempty"`
+	Message *string   `json:"message,omitempty"`
+}
+
+func (response MarkQuestionAsRead200JSONResponse) VisitMarkQuestionAsReadResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type MarkQuestionAsRead401JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response MarkQuestionAsRead401JSONResponse) VisitMarkQuestionAsReadResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type MarkQuestionAsRead403JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response MarkQuestionAsRead403JSONResponse) VisitMarkQuestionAsReadResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type MarkQuestionAsRead404JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response MarkQuestionAsRead404JSONResponse) VisitMarkQuestionAsReadResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type RegisterUserRequestObject struct {
+	Body *RegisterUserJSONRequestBody
+}
+
+type RegisterUserResponseObject interface {
+	VisitRegisterUserResponse(w http.ResponseWriter) error
+}
+
+type RegisterUser201JSONResponse struct {
+	// Data ユーザープロフィール情報
+	Data    *User   `json:"data,omitempty"`
+	Message *string `json:"message,omitempty"`
+}
+
+func (response RegisterUser201JSONResponse) VisitRegisterUserResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type RegisterUser400JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response RegisterUser400JSONResponse) VisitRegisterUserResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type RegisterUser409JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response RegisterUser409JSONResponse) VisitRegisterUserResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(409)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type BlockUserRequestObject struct {
+	Body *BlockUserJSONRequestBody
+}
+
+type BlockUserResponseObject interface {
+	VisitBlockUserResponse(w http.ResponseWriter) error
+}
+
+type BlockUser201JSONResponse struct {
+	// Data ブロックユーザー情報
+	Data    *BlockedUser `json:"data,omitempty"`
+	Message *string      `json:"message,omitempty"`
+}
+
+func (response BlockUser201JSONResponse) VisitBlockUserResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type BlockUser400JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response BlockUser400JSONResponse) VisitBlockUserResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type BlockUser401JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response BlockUser401JSONResponse) VisitBlockUserResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UnblockUserRequestObject struct {
+	UserId string `json:"userId"`
+}
+
+type UnblockUserResponseObject interface {
+	VisitUnblockUserResponse(w http.ResponseWriter) error
+}
+
+type UnblockUser200JSONResponse struct {
+	Data    *map[string]interface{} `json:"data,omitempty"`
+	Message *string                 `json:"message,omitempty"`
+}
+
+func (response UnblockUser200JSONResponse) VisitUnblockUserResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UnblockUser401JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response UnblockUser401JSONResponse) VisitUnblockUserResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UnblockUser404JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response UnblockUser404JSONResponse) VisitUnblockUserResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetBlockedUsersRequestObject struct {
+	Params GetBlockedUsersParams
+}
+
+type GetBlockedUsersResponseObject interface {
+	VisitGetBlockedUsersResponse(w http.ResponseWriter) error
+}
+
+type GetBlockedUsers200JSONResponse struct {
+	Data       []BlockedUser `json:"data"`
+	Pagination struct {
+		Limit      int32 `json:"limit"`
+		Page       int32 `json:"page"`
+		Total      int32 `json:"total"`
+		TotalPages int32 `json:"totalPages"`
+	} `json:"pagination"`
+}
+
+func (response GetBlockedUsers200JSONResponse) VisitGetBlockedUsersResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetBlockedUsers401JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response GetBlockedUsers401JSONResponse) VisitGetBlockedUsersResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type LoginUserRequestObject struct {
+	Body *LoginUserJSONRequestBody
+}
+
+type LoginUserResponseObject interface {
+	VisitLoginUserResponse(w http.ResponseWriter) error
+}
+
+type LoginUser200JSONResponse struct {
+	// Data ログインレスポンス
+	Data    *LoginResponse `json:"data,omitempty"`
+	Message *string        `json:"message,omitempty"`
+}
+
+func (response LoginUser200JSONResponse) VisitLoginUserResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type LoginUser401JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response LoginUser401JSONResponse) VisitLoginUserResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type LogoutUserRequestObject struct {
+}
+
+type LogoutUserResponseObject interface {
+	VisitLogoutUserResponse(w http.ResponseWriter) error
+}
+
+type LogoutUser200JSONResponse struct {
+	Data    *map[string]interface{} `json:"data,omitempty"`
+	Message *string                 `json:"message,omitempty"`
+}
+
+func (response LogoutUser200JSONResponse) VisitLogoutUserResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type LogoutUser401JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response LogoutUser401JSONResponse) VisitLogoutUserResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetCurrentUserRequestObject struct {
+}
+
+type GetCurrentUserResponseObject interface {
+	VisitGetCurrentUserResponse(w http.ResponseWriter) error
+}
+
+type GetCurrentUser200JSONResponse struct {
+	// Data ユーザープロフィール情報
+	Data    *User   `json:"data,omitempty"`
+	Message *string `json:"message,omitempty"`
+}
+
+func (response GetCurrentUser200JSONResponse) VisitGetCurrentUserResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetCurrentUser401JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response GetCurrentUser401JSONResponse) VisitGetCurrentUserResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdateUserProfileRequestObject struct {
+	Body *UpdateUserProfileJSONRequestBody
+}
+
+type UpdateUserProfileResponseObject interface {
+	VisitUpdateUserProfileResponse(w http.ResponseWriter) error
+}
+
+type UpdateUserProfile200JSONResponse struct {
+	// Data ユーザープロフィール情報
+	Data    *User   `json:"data,omitempty"`
+	Message *string `json:"message,omitempty"`
+}
+
+func (response UpdateUserProfile200JSONResponse) VisitUpdateUserProfileResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdateUserProfile400JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response UpdateUserProfile400JSONResponse) VisitUpdateUserProfileResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdateUserProfile401JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response UpdateUserProfile401JSONResponse) VisitUpdateUserProfileResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetNgWordsRequestObject struct {
+	Params GetNgWordsParams
+}
+
+type GetNgWordsResponseObject interface {
+	VisitGetNgWordsResponse(w http.ResponseWriter) error
+}
+
+type GetNgWords200JSONResponse struct {
+	Data       []NgWord `json:"data"`
+	Pagination struct {
+		Limit      int32 `json:"limit"`
+		Page       int32 `json:"page"`
+		Total      int32 `json:"total"`
+		TotalPages int32 `json:"totalPages"`
+	} `json:"pagination"`
+}
+
+func (response GetNgWords200JSONResponse) VisitGetNgWordsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetNgWords401JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response GetNgWords401JSONResponse) VisitGetNgWordsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type AddNgWordRequestObject struct {
+	Body *AddNgWordJSONRequestBody
+}
+
+type AddNgWordResponseObject interface {
+	VisitAddNgWordResponse(w http.ResponseWriter) error
+}
+
+type AddNgWord201JSONResponse struct {
+	// Data NGワード
+	Data    *NgWord `json:"data,omitempty"`
+	Message *string `json:"message,omitempty"`
+}
+
+func (response AddNgWord201JSONResponse) VisitAddNgWordResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type AddNgWord400JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response AddNgWord400JSONResponse) VisitAddNgWordResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type AddNgWord401JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response AddNgWord401JSONResponse) VisitAddNgWordResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeleteNgWordRequestObject struct {
+	NgWordId string `json:"ngWordId"`
+}
+
+type DeleteNgWordResponseObject interface {
+	VisitDeleteNgWordResponse(w http.ResponseWriter) error
+}
+
+type DeleteNgWord200JSONResponse struct {
+	Data    *map[string]interface{} `json:"data,omitempty"`
+	Message *string                 `json:"message,omitempty"`
+}
+
+func (response DeleteNgWord200JSONResponse) VisitDeleteNgWordResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeleteNgWord401JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response DeleteNgWord401JSONResponse) VisitDeleteNgWordResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeleteNgWord404JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response DeleteNgWord404JSONResponse) VisitDeleteNgWordResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetPublicUserInfoRequestObject struct {
+	UserId string `json:"userId"`
+}
+
+type GetPublicUserInfoResponseObject interface {
+	VisitGetPublicUserInfoResponse(w http.ResponseWriter) error
+}
+
+type GetPublicUserInfo200JSONResponse struct {
+	// Data 公開用ユーザー情報
+	Data    *PublicUserInfo `json:"data,omitempty"`
+	Message *string         `json:"message,omitempty"`
+}
+
+func (response GetPublicUserInfo200JSONResponse) VisitGetPublicUserInfoResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetPublicUserInfo404JSONResponse struct {
+	// Data エラー詳細情報
+	Data    *ErrorDetails `json:"data,omitempty"`
+	Message *string       `json:"message,omitempty"`
+}
+
+func (response GetPublicUserInfo404JSONResponse) VisitGetPublicUserInfoResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+// StrictServerInterface represents all server handlers.
+type StrictServerInterface interface {
+	// 画像ファイルをアップロード
+	// (POST /api/files/images)
+	UploadImage(ctx context.Context, request UploadImageRequestObject) (UploadImageResponseObject, error)
+	// 画像ファイルを削除
+	// (DELETE /api/files/images/{imageId})
+	DeleteImage(ctx context.Context, request DeleteImageRequestObject) (DeleteImageResponseObject, error)
+	// 画像ファイルを取得
+	// (GET /api/files/images/{imageId})
+	GetImage(ctx context.Context, request GetImageRequestObject) (GetImageResponseObject, error)
+	// 新しい質問を送信
+	// (POST /api/questions)
+	CreateQuestion(ctx context.Context, request CreateQuestionRequestObject) (CreateQuestionResponseObject, error)
+	// ユーザーの公開質問・回答一覧取得
+	// (GET /api/questions/public/{userId})
+	GetPublicQAs(ctx context.Context, request GetPublicQAsRequestObject) (GetPublicQAsResponseObject, error)
+	// 受信した質問一覧取得
+	// (GET /api/questions/received)
+	GetReceivedQuestions(ctx context.Context, request GetReceivedQuestionsRequestObject) (GetReceivedQuestionsResponseObject, error)
+	// 不適切なコンテンツを通報
+	// (POST /api/questions/report)
+	ReportContent(ctx context.Context, request ReportContentRequestObject) (ReportContentResponseObject, error)
+	// 送信した質問一覧取得
+	// (GET /api/questions/sent)
+	GetSentQuestions(ctx context.Context, request GetSentQuestionsRequestObject) (GetSentQuestionsResponseObject, error)
+	// 質問を削除
+	// (DELETE /api/questions/{questionId})
+	DeleteQuestion(ctx context.Context, request DeleteQuestionRequestObject) (DeleteQuestionResponseObject, error)
+	// 質問詳細情報取得
+	// (GET /api/questions/{questionId})
+	GetQuestionDetail(ctx context.Context, request GetQuestionDetailRequestObject) (GetQuestionDetailResponseObject, error)
+	// 質問内容を編集
+	// (PATCH /api/questions/{questionId})
+	UpdateQuestion(ctx context.Context, request UpdateQuestionRequestObject) (UpdateQuestionResponseObject, error)
+	// 質問に回答を作成
+	// (POST /api/questions/{questionId}/answer)
+	CreateAnswer(ctx context.Context, request CreateAnswerRequestObject) (CreateAnswerResponseObject, error)
+	// 質問を既読にマーク
+	// (PATCH /api/questions/{questionId}/read)
+	MarkQuestionAsRead(ctx context.Context, request MarkQuestionAsReadRequestObject) (MarkQuestionAsReadResponseObject, error)
+	// 新規ユーザー登録
+	// (POST /api/users)
+	RegisterUser(ctx context.Context, request RegisterUserRequestObject) (RegisterUserResponseObject, error)
+	// ユーザーをブロック
+	// (POST /api/users/block)
+	BlockUser(ctx context.Context, request BlockUserRequestObject) (BlockUserResponseObject, error)
+	// ユーザーのブロックを解除
+	// (DELETE /api/users/block/{userId})
+	UnblockUser(ctx context.Context, request UnblockUserRequestObject) (UnblockUserResponseObject, error)
+	// ブロックしたユーザー一覧取得
+	// (GET /api/users/blocked)
+	GetBlockedUsers(ctx context.Context, request GetBlockedUsersRequestObject) (GetBlockedUsersResponseObject, error)
+	// ユーザーログイン
+	// (POST /api/users/login)
+	LoginUser(ctx context.Context, request LoginUserRequestObject) (LoginUserResponseObject, error)
+	// ユーザーログアウト
+	// (POST /api/users/logout)
+	LogoutUser(ctx context.Context, request LogoutUserRequestObject) (LogoutUserResponseObject, error)
+	// ログイン中のユーザー情報取得
+	// (GET /api/users/me)
+	GetCurrentUser(ctx context.Context, request GetCurrentUserRequestObject) (GetCurrentUserResponseObject, error)
+	// ユーザープロフィール更新
+	// (PATCH /api/users/me)
+	UpdateUserProfile(ctx context.Context, request UpdateUserProfileRequestObject) (UpdateUserProfileResponseObject, error)
+	// NGワード一覧取得
+	// (GET /api/users/ng-words)
+	GetNgWords(ctx context.Context, request GetNgWordsRequestObject) (GetNgWordsResponseObject, error)
+	// NGワードを追加
+	// (POST /api/users/ng-words)
+	AddNgWord(ctx context.Context, request AddNgWordRequestObject) (AddNgWordResponseObject, error)
+	// NGワードを削除
+	// (DELETE /api/users/ng-words/{ngWordId})
+	DeleteNgWord(ctx context.Context, request DeleteNgWordRequestObject) (DeleteNgWordResponseObject, error)
+	// 公開ユーザー情報取得
+	// (GET /api/users/{userId})
+	GetPublicUserInfo(ctx context.Context, request GetPublicUserInfoRequestObject) (GetPublicUserInfoResponseObject, error)
+}
+
+type StrictHandlerFunc = strictecho.StrictEchoHandlerFunc
+type StrictMiddlewareFunc = strictecho.StrictEchoMiddlewareFunc
+
+func NewStrictHandler(ssi StrictServerInterface, middlewares []StrictMiddlewareFunc) ServerInterface {
+	return &strictHandler{ssi: ssi, middlewares: middlewares}
+}
+
+type strictHandler struct {
+	ssi         StrictServerInterface
+	middlewares []StrictMiddlewareFunc
+}
+
+// UploadImage operation middleware
+func (sh *strictHandler) UploadImage(ctx echo.Context) error {
+	var request UploadImageRequestObject
+
+	request.Body = ctx.Request().Body
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.UploadImage(ctx.Request().Context(), request.(UploadImageRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UploadImage")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(UploadImageResponseObject); ok {
+		return validResponse.VisitUploadImageResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// DeleteImage operation middleware
+func (sh *strictHandler) DeleteImage(ctx echo.Context, imageId string) error {
+	var request DeleteImageRequestObject
+
+	request.ImageId = imageId
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteImage(ctx.Request().Context(), request.(DeleteImageRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteImage")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(DeleteImageResponseObject); ok {
+		return validResponse.VisitDeleteImageResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// GetImage operation middleware
+func (sh *strictHandler) GetImage(ctx echo.Context, imageId string) error {
+	var request GetImageRequestObject
+
+	request.ImageId = imageId
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetImage(ctx.Request().Context(), request.(GetImageRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetImage")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(GetImageResponseObject); ok {
+		return validResponse.VisitGetImageResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// CreateQuestion operation middleware
+func (sh *strictHandler) CreateQuestion(ctx echo.Context) error {
+	var request CreateQuestionRequestObject
+
+	var body CreateQuestionJSONRequestBody
+	if err := ctx.Bind(&body); err != nil {
+		return err
+	}
+	request.Body = &body
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateQuestion(ctx.Request().Context(), request.(CreateQuestionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateQuestion")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(CreateQuestionResponseObject); ok {
+		return validResponse.VisitCreateQuestionResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// GetPublicQAs operation middleware
+func (sh *strictHandler) GetPublicQAs(ctx echo.Context, userId string, params GetPublicQAsParams) error {
+	var request GetPublicQAsRequestObject
+
+	request.UserId = userId
+	request.Params = params
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetPublicQAs(ctx.Request().Context(), request.(GetPublicQAsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetPublicQAs")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(GetPublicQAsResponseObject); ok {
+		return validResponse.VisitGetPublicQAsResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// GetReceivedQuestions operation middleware
+func (sh *strictHandler) GetReceivedQuestions(ctx echo.Context, params GetReceivedQuestionsParams) error {
+	var request GetReceivedQuestionsRequestObject
+
+	request.Params = params
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetReceivedQuestions(ctx.Request().Context(), request.(GetReceivedQuestionsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetReceivedQuestions")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(GetReceivedQuestionsResponseObject); ok {
+		return validResponse.VisitGetReceivedQuestionsResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// ReportContent operation middleware
+func (sh *strictHandler) ReportContent(ctx echo.Context) error {
+	var request ReportContentRequestObject
+
+	var body ReportContentJSONRequestBody
+	if err := ctx.Bind(&body); err != nil {
+		return err
+	}
+	request.Body = &body
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.ReportContent(ctx.Request().Context(), request.(ReportContentRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ReportContent")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(ReportContentResponseObject); ok {
+		return validResponse.VisitReportContentResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// GetSentQuestions operation middleware
+func (sh *strictHandler) GetSentQuestions(ctx echo.Context, params GetSentQuestionsParams) error {
+	var request GetSentQuestionsRequestObject
+
+	request.Params = params
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetSentQuestions(ctx.Request().Context(), request.(GetSentQuestionsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetSentQuestions")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(GetSentQuestionsResponseObject); ok {
+		return validResponse.VisitGetSentQuestionsResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// DeleteQuestion operation middleware
+func (sh *strictHandler) DeleteQuestion(ctx echo.Context, questionId string) error {
+	var request DeleteQuestionRequestObject
+
+	request.QuestionId = questionId
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteQuestion(ctx.Request().Context(), request.(DeleteQuestionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteQuestion")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(DeleteQuestionResponseObject); ok {
+		return validResponse.VisitDeleteQuestionResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// GetQuestionDetail operation middleware
+func (sh *strictHandler) GetQuestionDetail(ctx echo.Context, questionId string) error {
+	var request GetQuestionDetailRequestObject
+
+	request.QuestionId = questionId
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetQuestionDetail(ctx.Request().Context(), request.(GetQuestionDetailRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetQuestionDetail")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(GetQuestionDetailResponseObject); ok {
+		return validResponse.VisitGetQuestionDetailResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// UpdateQuestion operation middleware
+func (sh *strictHandler) UpdateQuestion(ctx echo.Context, questionId string) error {
+	var request UpdateQuestionRequestObject
+
+	request.QuestionId = questionId
+
+	var body UpdateQuestionJSONRequestBody
+	if err := ctx.Bind(&body); err != nil {
+		return err
+	}
+	request.Body = &body
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateQuestion(ctx.Request().Context(), request.(UpdateQuestionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateQuestion")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(UpdateQuestionResponseObject); ok {
+		return validResponse.VisitUpdateQuestionResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// CreateAnswer operation middleware
+func (sh *strictHandler) CreateAnswer(ctx echo.Context, questionId string) error {
+	var request CreateAnswerRequestObject
+
+	request.QuestionId = questionId
+
+	var body CreateAnswerJSONRequestBody
+	if err := ctx.Bind(&body); err != nil {
+		return err
+	}
+	request.Body = &body
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateAnswer(ctx.Request().Context(), request.(CreateAnswerRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateAnswer")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(CreateAnswerResponseObject); ok {
+		return validResponse.VisitCreateAnswerResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// MarkQuestionAsRead operation middleware
+func (sh *strictHandler) MarkQuestionAsRead(ctx echo.Context, questionId string) error {
+	var request MarkQuestionAsReadRequestObject
+
+	request.QuestionId = questionId
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.MarkQuestionAsRead(ctx.Request().Context(), request.(MarkQuestionAsReadRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "MarkQuestionAsRead")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(MarkQuestionAsReadResponseObject); ok {
+		return validResponse.VisitMarkQuestionAsReadResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// RegisterUser operation middleware
+func (sh *strictHandler) RegisterUser(ctx echo.Context) error {
+	var request RegisterUserRequestObject
+
+	var body RegisterUserJSONRequestBody
+	if err := ctx.Bind(&body); err != nil {
+		return err
+	}
+	request.Body = &body
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.RegisterUser(ctx.Request().Context(), request.(RegisterUserRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "RegisterUser")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(RegisterUserResponseObject); ok {
+		return validResponse.VisitRegisterUserResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// BlockUser operation middleware
+func (sh *strictHandler) BlockUser(ctx echo.Context) error {
+	var request BlockUserRequestObject
+
+	var body BlockUserJSONRequestBody
+	if err := ctx.Bind(&body); err != nil {
+		return err
+	}
+	request.Body = &body
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.BlockUser(ctx.Request().Context(), request.(BlockUserRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "BlockUser")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(BlockUserResponseObject); ok {
+		return validResponse.VisitBlockUserResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// UnblockUser operation middleware
+func (sh *strictHandler) UnblockUser(ctx echo.Context, userId string) error {
+	var request UnblockUserRequestObject
+
+	request.UserId = userId
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.UnblockUser(ctx.Request().Context(), request.(UnblockUserRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UnblockUser")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(UnblockUserResponseObject); ok {
+		return validResponse.VisitUnblockUserResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// GetBlockedUsers operation middleware
+func (sh *strictHandler) GetBlockedUsers(ctx echo.Context, params GetBlockedUsersParams) error {
+	var request GetBlockedUsersRequestObject
+
+	request.Params = params
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetBlockedUsers(ctx.Request().Context(), request.(GetBlockedUsersRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetBlockedUsers")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(GetBlockedUsersResponseObject); ok {
+		return validResponse.VisitGetBlockedUsersResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// LoginUser operation middleware
+func (sh *strictHandler) LoginUser(ctx echo.Context) error {
+	var request LoginUserRequestObject
+
+	var body LoginUserJSONRequestBody
+	if err := ctx.Bind(&body); err != nil {
+		return err
+	}
+	request.Body = &body
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.LoginUser(ctx.Request().Context(), request.(LoginUserRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "LoginUser")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(LoginUserResponseObject); ok {
+		return validResponse.VisitLoginUserResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// LogoutUser operation middleware
+func (sh *strictHandler) LogoutUser(ctx echo.Context) error {
+	var request LogoutUserRequestObject
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.LogoutUser(ctx.Request().Context(), request.(LogoutUserRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "LogoutUser")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(LogoutUserResponseObject); ok {
+		return validResponse.VisitLogoutUserResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// GetCurrentUser operation middleware
+func (sh *strictHandler) GetCurrentUser(ctx echo.Context) error {
+	var request GetCurrentUserRequestObject
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetCurrentUser(ctx.Request().Context(), request.(GetCurrentUserRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetCurrentUser")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(GetCurrentUserResponseObject); ok {
+		return validResponse.VisitGetCurrentUserResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// UpdateUserProfile operation middleware
+func (sh *strictHandler) UpdateUserProfile(ctx echo.Context) error {
+	var request UpdateUserProfileRequestObject
+
+	var body UpdateUserProfileJSONRequestBody
+	if err := ctx.Bind(&body); err != nil {
+		return err
+	}
+	request.Body = &body
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateUserProfile(ctx.Request().Context(), request.(UpdateUserProfileRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateUserProfile")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(UpdateUserProfileResponseObject); ok {
+		return validResponse.VisitUpdateUserProfileResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// GetNgWords operation middleware
+func (sh *strictHandler) GetNgWords(ctx echo.Context, params GetNgWordsParams) error {
+	var request GetNgWordsRequestObject
+
+	request.Params = params
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetNgWords(ctx.Request().Context(), request.(GetNgWordsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetNgWords")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(GetNgWordsResponseObject); ok {
+		return validResponse.VisitGetNgWordsResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// AddNgWord operation middleware
+func (sh *strictHandler) AddNgWord(ctx echo.Context) error {
+	var request AddNgWordRequestObject
+
+	var body AddNgWordJSONRequestBody
+	if err := ctx.Bind(&body); err != nil {
+		return err
+	}
+	request.Body = &body
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.AddNgWord(ctx.Request().Context(), request.(AddNgWordRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AddNgWord")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(AddNgWordResponseObject); ok {
+		return validResponse.VisitAddNgWordResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// DeleteNgWord operation middleware
+func (sh *strictHandler) DeleteNgWord(ctx echo.Context, ngWordId string) error {
+	var request DeleteNgWordRequestObject
+
+	request.NgWordId = ngWordId
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteNgWord(ctx.Request().Context(), request.(DeleteNgWordRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteNgWord")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(DeleteNgWordResponseObject); ok {
+		return validResponse.VisitDeleteNgWordResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// GetPublicUserInfo operation middleware
+func (sh *strictHandler) GetPublicUserInfo(ctx echo.Context, userId string) error {
+	var request GetPublicUserInfoRequestObject
+
+	request.UserId = userId
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetPublicUserInfo(ctx.Request().Context(), request.(GetPublicUserInfoRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetPublicUserInfo")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(GetPublicUserInfoResponseObject); ok {
+		return validResponse.VisitGetPublicUserInfoResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
 }

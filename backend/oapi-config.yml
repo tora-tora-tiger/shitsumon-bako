@@ -2,4 +2,5 @@ package: schema
 generate:
   - models
   - echo-server
+  - strict-server
 output: pkg/schema/schema.gen.go
