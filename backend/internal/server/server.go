@@ -8,7 +8,6 @@ import (
 	"backend/internal/middleware"
 	"backend/pkg/schema"
 
-	opmiddleware "github.com/oapi-codegen/echo-middleware"
 	"github.com/labstack/echo/v4"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
 )
@@ -21,16 +20,11 @@ type Server struct {
 func New(cfg *config.Config) *Server {
 	e := echo.New()
 
-	swagger, err := schema.GetSwagger()
-	if err != nil {
-		e.Logger.Fatal(err)
-	}
-
 	// Middleware
 	e.Use(echomiddleware.Logger())
 	e.Use(echomiddleware.Recover())
 	e.Use(middleware.CORS())
-	e.Use(opmiddleware.OapiRequestValidator(swagger))
+	e.Use(middleware.Validator())
 
 	return &Server{
 		echo:   e,
