@@ -17,14 +17,14 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"backend/internal/database"
+	"backend/internal/database/model"
 )
 
 func newQuestion(db *gorm.DB, opts ...gen.DOOption) question {
 	_question := question{}
 
 	_question.questionDo.UseDB(db, opts...)
-	_question.questionDo.UseModel(&database.Question{})
+	_question.questionDo.UseModel(&model.Question{})
 
 	tableName := _question.questionDo.TableName()
 	_question.ALL = field.NewAsterisk(tableName)
@@ -40,7 +40,7 @@ func newQuestion(db *gorm.DB, opts ...gen.DOOption) question {
 	_question.AttachedImageList = questionHasManyAttachedImageList{
 		db: db.Session(&gorm.Session{}),
 
-		RelationField: field.NewRelation("AttachedImageList", "database.ImageFile"),
+		RelationField: field.NewRelation("AttachedImageList", "model.ImageFile"),
 	}
 
 	_question.fillFieldMap()
@@ -158,7 +158,7 @@ func (a questionHasManyAttachedImageList) Session(session *gorm.Session) *questi
 	return &a
 }
 
-func (a questionHasManyAttachedImageList) Model(m *database.Question) *questionHasManyAttachedImageListTx {
+func (a questionHasManyAttachedImageList) Model(m *model.Question) *questionHasManyAttachedImageListTx {
 	return &questionHasManyAttachedImageListTx{a.db.Model(m).Association(a.Name())}
 }
 
@@ -169,11 +169,11 @@ func (a questionHasManyAttachedImageList) Unscoped() *questionHasManyAttachedIma
 
 type questionHasManyAttachedImageListTx struct{ tx *gorm.Association }
 
-func (a questionHasManyAttachedImageListTx) Find() (result []*database.ImageFile, err error) {
+func (a questionHasManyAttachedImageListTx) Find() (result []*model.ImageFile, err error) {
 	return result, a.tx.Find(&result)
 }
 
-func (a questionHasManyAttachedImageListTx) Append(values ...*database.ImageFile) (err error) {
+func (a questionHasManyAttachedImageListTx) Append(values ...*model.ImageFile) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -181,7 +181,7 @@ func (a questionHasManyAttachedImageListTx) Append(values ...*database.ImageFile
 	return a.tx.Append(targetValues...)
 }
 
-func (a questionHasManyAttachedImageListTx) Replace(values ...*database.ImageFile) (err error) {
+func (a questionHasManyAttachedImageListTx) Replace(values ...*model.ImageFile) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -189,7 +189,7 @@ func (a questionHasManyAttachedImageListTx) Replace(values ...*database.ImageFil
 	return a.tx.Replace(targetValues...)
 }
 
-func (a questionHasManyAttachedImageListTx) Delete(values ...*database.ImageFile) (err error) {
+func (a questionHasManyAttachedImageListTx) Delete(values ...*model.ImageFile) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -241,17 +241,17 @@ type IQuestionDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IQuestionDo
 	Unscoped() IQuestionDo
-	Create(values ...*database.Question) error
-	CreateInBatches(values []*database.Question, batchSize int) error
-	Save(values ...*database.Question) error
-	First() (*database.Question, error)
-	Take() (*database.Question, error)
-	Last() (*database.Question, error)
-	Find() ([]*database.Question, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*database.Question, err error)
-	FindInBatches(result *[]*database.Question, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*model.Question) error
+	CreateInBatches(values []*model.Question, batchSize int) error
+	Save(values ...*model.Question) error
+	First() (*model.Question, error)
+	Take() (*model.Question, error)
+	Last() (*model.Question, error)
+	Find() ([]*model.Question, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Question, err error)
+	FindInBatches(result *[]*model.Question, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*database.Question) (info gen.ResultInfo, err error)
+	Delete(...*model.Question) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -263,9 +263,9 @@ type IQuestionDo interface {
 	Assign(attrs ...field.AssignExpr) IQuestionDo
 	Joins(fields ...field.RelationField) IQuestionDo
 	Preload(fields ...field.RelationField) IQuestionDo
-	FirstOrInit() (*database.Question, error)
-	FirstOrCreate() (*database.Question, error)
-	FindByPage(offset int, limit int) (result []*database.Question, count int64, err error)
+	FirstOrInit() (*model.Question, error)
+	FirstOrCreate() (*model.Question, error)
+	FindByPage(offset int, limit int) (result []*model.Question, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Rows() (*sql.Rows, error)
 	Row() *sql.Row
@@ -367,57 +367,57 @@ func (q questionDo) Unscoped() IQuestionDo {
 	return q.withDO(q.DO.Unscoped())
 }
 
-func (q questionDo) Create(values ...*database.Question) error {
+func (q questionDo) Create(values ...*model.Question) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return q.DO.Create(values)
 }
 
-func (q questionDo) CreateInBatches(values []*database.Question, batchSize int) error {
+func (q questionDo) CreateInBatches(values []*model.Question, batchSize int) error {
 	return q.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (q questionDo) Save(values ...*database.Question) error {
+func (q questionDo) Save(values ...*model.Question) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return q.DO.Save(values)
 }
 
-func (q questionDo) First() (*database.Question, error) {
+func (q questionDo) First() (*model.Question, error) {
 	if result, err := q.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*database.Question), nil
+		return result.(*model.Question), nil
 	}
 }
 
-func (q questionDo) Take() (*database.Question, error) {
+func (q questionDo) Take() (*model.Question, error) {
 	if result, err := q.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*database.Question), nil
+		return result.(*model.Question), nil
 	}
 }
 
-func (q questionDo) Last() (*database.Question, error) {
+func (q questionDo) Last() (*model.Question, error) {
 	if result, err := q.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*database.Question), nil
+		return result.(*model.Question), nil
 	}
 }
 
-func (q questionDo) Find() ([]*database.Question, error) {
+func (q questionDo) Find() ([]*model.Question, error) {
 	result, err := q.DO.Find()
-	return result.([]*database.Question), err
+	return result.([]*model.Question), err
 }
 
-func (q questionDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*database.Question, err error) {
-	buf := make([]*database.Question, 0, batchSize)
+func (q questionDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Question, err error) {
+	buf := make([]*model.Question, 0, batchSize)
 	err = q.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -425,7 +425,7 @@ func (q questionDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) er
 	return results, err
 }
 
-func (q questionDo) FindInBatches(result *[]*database.Question, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (q questionDo) FindInBatches(result *[]*model.Question, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return q.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -451,23 +451,23 @@ func (q questionDo) Preload(fields ...field.RelationField) IQuestionDo {
 	return &q
 }
 
-func (q questionDo) FirstOrInit() (*database.Question, error) {
+func (q questionDo) FirstOrInit() (*model.Question, error) {
 	if result, err := q.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*database.Question), nil
+		return result.(*model.Question), nil
 	}
 }
 
-func (q questionDo) FirstOrCreate() (*database.Question, error) {
+func (q questionDo) FirstOrCreate() (*model.Question, error) {
 	if result, err := q.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*database.Question), nil
+		return result.(*model.Question), nil
 	}
 }
 
-func (q questionDo) FindByPage(offset int, limit int) (result []*database.Question, count int64, err error) {
+func (q questionDo) FindByPage(offset int, limit int) (result []*model.Question, count int64, err error) {
 	result, err = q.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -496,7 +496,7 @@ func (q questionDo) Scan(result interface{}) (err error) {
 	return q.DO.Scan(result)
 }
 
-func (q questionDo) Delete(models ...*database.Question) (result gen.ResultInfo, err error) {
+func (q questionDo) Delete(models ...*model.Question) (result gen.ResultInfo, err error) {
 	return q.DO.Delete(models)
 }
 

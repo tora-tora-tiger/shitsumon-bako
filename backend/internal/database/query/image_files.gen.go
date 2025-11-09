@@ -17,14 +17,14 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"backend/internal/database"
+	"backend/internal/database/model"
 )
 
 func newImageFile(db *gorm.DB, opts ...gen.DOOption) imageFile {
 	_imageFile := imageFile{}
 
 	_imageFile.imageFileDo.UseDB(db, opts...)
-	_imageFile.imageFileDo.UseModel(&database.ImageFile{})
+	_imageFile.imageFileDo.UseModel(&model.ImageFile{})
 
 	tableName := _imageFile.imageFileDo.TableName()
 	_imageFile.ALL = field.NewAsterisk(tableName)
@@ -150,17 +150,17 @@ type IImageFileDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IImageFileDo
 	Unscoped() IImageFileDo
-	Create(values ...*database.ImageFile) error
-	CreateInBatches(values []*database.ImageFile, batchSize int) error
-	Save(values ...*database.ImageFile) error
-	First() (*database.ImageFile, error)
-	Take() (*database.ImageFile, error)
-	Last() (*database.ImageFile, error)
-	Find() ([]*database.ImageFile, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*database.ImageFile, err error)
-	FindInBatches(result *[]*database.ImageFile, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*model.ImageFile) error
+	CreateInBatches(values []*model.ImageFile, batchSize int) error
+	Save(values ...*model.ImageFile) error
+	First() (*model.ImageFile, error)
+	Take() (*model.ImageFile, error)
+	Last() (*model.ImageFile, error)
+	Find() ([]*model.ImageFile, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.ImageFile, err error)
+	FindInBatches(result *[]*model.ImageFile, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*database.ImageFile) (info gen.ResultInfo, err error)
+	Delete(...*model.ImageFile) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -172,9 +172,9 @@ type IImageFileDo interface {
 	Assign(attrs ...field.AssignExpr) IImageFileDo
 	Joins(fields ...field.RelationField) IImageFileDo
 	Preload(fields ...field.RelationField) IImageFileDo
-	FirstOrInit() (*database.ImageFile, error)
-	FirstOrCreate() (*database.ImageFile, error)
-	FindByPage(offset int, limit int) (result []*database.ImageFile, count int64, err error)
+	FirstOrInit() (*model.ImageFile, error)
+	FirstOrCreate() (*model.ImageFile, error)
+	FindByPage(offset int, limit int) (result []*model.ImageFile, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Rows() (*sql.Rows, error)
 	Row() *sql.Row
@@ -276,57 +276,57 @@ func (i imageFileDo) Unscoped() IImageFileDo {
 	return i.withDO(i.DO.Unscoped())
 }
 
-func (i imageFileDo) Create(values ...*database.ImageFile) error {
+func (i imageFileDo) Create(values ...*model.ImageFile) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return i.DO.Create(values)
 }
 
-func (i imageFileDo) CreateInBatches(values []*database.ImageFile, batchSize int) error {
+func (i imageFileDo) CreateInBatches(values []*model.ImageFile, batchSize int) error {
 	return i.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (i imageFileDo) Save(values ...*database.ImageFile) error {
+func (i imageFileDo) Save(values ...*model.ImageFile) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return i.DO.Save(values)
 }
 
-func (i imageFileDo) First() (*database.ImageFile, error) {
+func (i imageFileDo) First() (*model.ImageFile, error) {
 	if result, err := i.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*database.ImageFile), nil
+		return result.(*model.ImageFile), nil
 	}
 }
 
-func (i imageFileDo) Take() (*database.ImageFile, error) {
+func (i imageFileDo) Take() (*model.ImageFile, error) {
 	if result, err := i.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*database.ImageFile), nil
+		return result.(*model.ImageFile), nil
 	}
 }
 
-func (i imageFileDo) Last() (*database.ImageFile, error) {
+func (i imageFileDo) Last() (*model.ImageFile, error) {
 	if result, err := i.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*database.ImageFile), nil
+		return result.(*model.ImageFile), nil
 	}
 }
 
-func (i imageFileDo) Find() ([]*database.ImageFile, error) {
+func (i imageFileDo) Find() ([]*model.ImageFile, error) {
 	result, err := i.DO.Find()
-	return result.([]*database.ImageFile), err
+	return result.([]*model.ImageFile), err
 }
 
-func (i imageFileDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*database.ImageFile, err error) {
-	buf := make([]*database.ImageFile, 0, batchSize)
+func (i imageFileDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.ImageFile, err error) {
+	buf := make([]*model.ImageFile, 0, batchSize)
 	err = i.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -334,7 +334,7 @@ func (i imageFileDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) e
 	return results, err
 }
 
-func (i imageFileDo) FindInBatches(result *[]*database.ImageFile, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (i imageFileDo) FindInBatches(result *[]*model.ImageFile, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return i.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -360,23 +360,23 @@ func (i imageFileDo) Preload(fields ...field.RelationField) IImageFileDo {
 	return &i
 }
 
-func (i imageFileDo) FirstOrInit() (*database.ImageFile, error) {
+func (i imageFileDo) FirstOrInit() (*model.ImageFile, error) {
 	if result, err := i.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*database.ImageFile), nil
+		return result.(*model.ImageFile), nil
 	}
 }
 
-func (i imageFileDo) FirstOrCreate() (*database.ImageFile, error) {
+func (i imageFileDo) FirstOrCreate() (*model.ImageFile, error) {
 	if result, err := i.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*database.ImageFile), nil
+		return result.(*model.ImageFile), nil
 	}
 }
 
-func (i imageFileDo) FindByPage(offset int, limit int) (result []*database.ImageFile, count int64, err error) {
+func (i imageFileDo) FindByPage(offset int, limit int) (result []*model.ImageFile, count int64, err error) {
 	result, err = i.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -405,7 +405,7 @@ func (i imageFileDo) Scan(result interface{}) (err error) {
 	return i.DO.Scan(result)
 }
 
-func (i imageFileDo) Delete(models ...*database.ImageFile) (result gen.ResultInfo, err error) {
+func (i imageFileDo) Delete(models ...*model.ImageFile) (result gen.ResultInfo, err error) {
 	return i.DO.Delete(models)
 }
 

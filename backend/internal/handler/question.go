@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"net/http"
 
-	"backend/pkg/schema"
-
-	"backend/internal/db"
-
 	"github.com/labstack/echo/v4"
+
+	"backend/internal/database"
+	"backend/internal/database/model"
+	"backend/pkg/schema"
 )
 
-var DB = db.DB
+var DB = database.DB
 
 type QuestionHandler struct{}
 
@@ -27,16 +27,16 @@ func (h *QuestionHandler) CreateQuestion(ctx echo.Context) error {
 		})
 	}
 
-	q := db.Question{
+	q := model.Question{
 		Content:     req.Content,
 		RecipientId: req.RecipientId,
 		// 省略したいフィールドは設定しない（ポインタなら nil のまま）
 	}
 
 	if req.AttachedImageIdList != nil && len(*req.AttachedImageIdList) > 0 {
-		list := make([]db.ImageFile, 0, len(*req.AttachedImageIdList))
+		list := make([]model.ImageFile, 0, len(*req.AttachedImageIdList))
 		for _, id := range *req.AttachedImageIdList {
-			list = append(list, db.ImageFile{Id: id})
+			list = append(list, model.ImageFile{Id: id})
 		}
 		q.AttachedImageList = &list
 	}

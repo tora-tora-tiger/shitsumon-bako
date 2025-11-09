@@ -1,7 +1,7 @@
 package main
 
 import (
-	"backend/internal/database"
+	"backend/internal/database/model"
 
 	"gorm.io/gen"
 )
@@ -14,7 +14,7 @@ func main() {
 	})
 
 	// Generate basic type-safe DAO API for struct `model.User` following conventions
-	g.ApplyBasic(database.Question{}, database.ImageFile{})
+	g.ApplyBasic(model.Question{}, model.ImageFile{})
 
 	// Generate the code
 	g.Execute()

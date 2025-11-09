@@ -1,6 +1,10 @@
 package database
 
+import (
+	"backend/internal/database/model"
+)
+
 func Migrate() {
-	DB.AutoMigrate(&ImageFile{})
-	DB.AutoMigrate(&Question{})
+	DB.AutoMigrate(&model.ImageFile{})
+	DB.AutoMigrate(&model.Question{})
 }

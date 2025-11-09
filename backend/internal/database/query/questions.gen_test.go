@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"testing"
 
-	"backend/internal/database"
+	"backend/internal/database/model"
 
 	"gorm.io/gen"
 	"gorm.io/gen/field"
@@ -18,9 +18,9 @@ import (
 
 func init() {
 	InitializeDB()
-	err := _gen_test_db.AutoMigrate(&database.Question{})
+	err := _gen_test_db.AutoMigrate(&model.Question{})
 	if err != nil {
-		fmt.Printf("Error: AutoMigrate(&database.Question{}) fail: %s", err)
+		fmt.Printf("Error: AutoMigrate(&model.Question{}) fail: %s", err)
 	}
 }
 
@@ -41,17 +41,17 @@ func Test_questionQuery(t *testing.T) {
 		t.Error("GetFieldByName(\"\") from question success")
 	}
 
-	err = _do.Create(&database.Question{})
+	err = _do.Create(&model.Question{})
 	if err != nil {
 		t.Error("create item in table <questions> fail:", err)
 	}
 
-	err = _do.Save(&database.Question{})
+	err = _do.Save(&model.Question{})
 	if err != nil {
 		t.Error("create item in table <questions> fail:", err)
 	}
 
-	err = _do.CreateInBatches([]*database.Question{{}, {}}, 10)
+	err = _do.CreateInBatches([]*model.Question{{}, {}}, 10)
 	if err != nil {
 		t.Error("create item in table <questions> fail:", err)
 	}
@@ -76,7 +76,7 @@ func Test_questionQuery(t *testing.T) {
 		t.Error("FindInBatch() on table <questions> fail:", err)
 	}
 
-	err = _do.Where(primaryKey.IsNotNull()).FindInBatches(&[]*database.Question{}, 10, func(tx gen.Dao, batch int) error { return nil })
+	err = _do.Where(primaryKey.IsNotNull()).FindInBatches(&[]*model.Question{}, 10, func(tx gen.Dao, batch int) error { return nil })
 	if err != nil {
 		t.Error("FindInBatches() on table <questions> fail:", err)
 	}
@@ -111,7 +111,7 @@ func Test_questionQuery(t *testing.T) {
 		t.Error("FindByPage() on table <questions> fail:", err)
 	}
 
-	_, err = _do.ScanByPage(&database.Question{}, 0, 1)
+	_, err = _do.ScanByPage(&model.Question{}, 0, 1)
 	if err != nil {
 		t.Error("ScanByPage() on table <questions> fail:", err)
 	}

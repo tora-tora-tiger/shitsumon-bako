@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"testing"
 
-	"backend/internal/database"
+	"backend/internal/database/model"
 
 	"gorm.io/gen"
 	"gorm.io/gen/field"
@@ -18,9 +18,9 @@ import (
 
 func init() {
 	InitializeDB()
-	err := _gen_test_db.AutoMigrate(&database.ImageFile{})
+	err := _gen_test_db.AutoMigrate(&model.ImageFile{})
 	if err != nil {
-		fmt.Printf("Error: AutoMigrate(&database.ImageFile{}) fail: %s", err)
+		fmt.Printf("Error: AutoMigrate(&model.ImageFile{}) fail: %s", err)
 	}
 }
 
@@ -41,17 +41,17 @@ func Test_imageFileQuery(t *testing.T) {
 		t.Error("GetFieldByName(\"\") from imageFile success")
 	}
 
-	err = _do.Create(&database.ImageFile{})
+	err = _do.Create(&model.ImageFile{})
 	if err != nil {
 		t.Error("create item in table <image_files> fail:", err)
 	}
 
-	err = _do.Save(&database.ImageFile{})
+	err = _do.Save(&model.ImageFile{})
 	if err != nil {
 		t.Error("create item in table <image_files> fail:", err)
 	}
 
-	err = _do.CreateInBatches([]*database.ImageFile{{}, {}}, 10)
+	err = _do.CreateInBatches([]*model.ImageFile{{}, {}}, 10)
 	if err != nil {
 		t.Error("create item in table <image_files> fail:", err)
 	}
@@ -76,7 +76,7 @@ func Test_imageFileQuery(t *testing.T) {
 		t.Error("FindInBatch() on table <image_files> fail:", err)
 	}
 
-	err = _do.Where(primaryKey.IsNotNull()).FindInBatches(&[]*database.ImageFile{}, 10, func(tx gen.Dao, batch int) error { return nil })
+	err = _do.Where(primaryKey.IsNotNull()).FindInBatches(&[]*model.ImageFile{}, 10, func(tx gen.Dao, batch int) error { return nil })
 	if err != nil {
 		t.Error("FindInBatches() on table <image_files> fail:", err)
 	}
@@ -111,7 +111,7 @@ func Test_imageFileQuery(t *testing.T) {
 		t.Error("FindByPage() on table <image_files> fail:", err)
 	}
 
-	_, err = _do.ScanByPage(&database.ImageFile{}, 0, 1)
+	_, err = _do.ScanByPage(&model.ImageFile{}, 0, 1)
 	if err != nil {
 		t.Error("ScanByPage() on table <image_files> fail:", err)
 	}
