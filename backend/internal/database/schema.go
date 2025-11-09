@@ -1,4 +1,4 @@
-package db
+package database
 
 import (
 	"crypto/rand"
@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// TODO: 今後置き換える
 func generateUUID() string {
 	b := make([]byte, 16)
 	if _, err := rand.Read(b); err != nil {

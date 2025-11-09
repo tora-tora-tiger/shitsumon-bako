@@ -4,8 +4,8 @@ import (
 	"log"
 
 	"backend/internal/config"
+	"backend/internal/database"
 	"backend/internal/server"
-	"backend/internal/db"
 )
 
 func main() {
@@ -15,8 +15,8 @@ func main() {
 	// Create and start server
 	srv := server.New(cfg)
 
-	db.Migrate()
-	
+	database.Migrate()
+
 	log.Printf("Starting server on port %s", cfg.Server.Port)
 	if err := srv.Start(); err != nil {
 		log.Fatal("Server failed to start:", err)

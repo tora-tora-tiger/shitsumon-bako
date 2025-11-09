@@ -1,4 +1,4 @@
-package db
+package database
 
 func Migrate() {
 	DB.AutoMigrate(&ImageFile{})
