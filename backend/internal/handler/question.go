@@ -1,13 +1,13 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 
 	"backend/internal/database"
 	"backend/internal/database/model"
+	"backend/internal/database/query"
 	"backend/pkg/schema"
 )
 
@@ -52,58 +52,53 @@ func (h *QuestionHandler) CreateQuestion(ctx echo.Context) error {
 }
 
 func (h *QuestionHandler) GetReceivedQuestions(ctx echo.Context, params schema.GetReceivedQuestionsParams) error {
-	// debug
-	if params.Limit != nil {
-		fmt.Printf("limit: %v\n", *params.Limit)
-	} else {
-		fmt.Println("limit: nil")
-	}
-	if params.Page != nil {
-		fmt.Printf("page: %v\n", *params.Page)
-	} else {
-		fmt.Println("page: nil")
-	}
-	if params.Status != nil {
-		fmt.Printf("status: %v\n", *params.Status)
-	} else {
-		fmt.Println("status: nil")
-	}
-	if params.SortBy != nil {
-		fmt.Printf("sortBy: %v\n", *params.SortBy)
-	} else {
-		fmt.Println("sortBy: nil")
-	}
-	if params.SortOrder != nil {
-		fmt.Printf("sortOrder: %v\n", *params.SortOrder)
-	} else {
-		fmt.Println("sortOrder: nil")
-	}
-	p := schema.GetReceivedQuestionsParams(params)
-	fmt.Printf("params: %+v\n", p)
-	// var questions []db.Question
-
+	q := query.Question.WithContext(ctx.Request().Context())
+	// q := DB.WithContext(ctx.Request().Context())
 	// クエリを作る
-	// var order string
-	// if params.SortBy != nil {
-	// 	field := "createdAt"
-		
-	// 	if params.SortBy != nil && *params.SortBy != schema.GetReceivedQuestionsParamsSortBy {
-	// 		field = *params.SortBy
-	// 	}
-	// 	orderDir := ""
-	// 	if params.SortOrder != nil {
-	// 		orderDir = *params.SortOrder
-	// 	}
-	// 	order = fmt.Sprintf("%s %s", field, orderDir)
-	// }
-	// var query string
-	// if params.Status != nil {
-	// 	query = fmt.Sprintf("status = '%s'", *params.Status)
-	// }
+	// ステータスフィルター
+	if params.Status != nil {
+		q = q.Where(query.Question.Status.Eq(string(*params.Status)))
+	}
 
-	// error := DB.Where(query).Order(order).Find(&questions)
+	// ソート
+	if params.SortBy != nil {
+		field := schema.GetReceivedQuestionsParamsSortByCreatedAt
+		if params.SortBy != nil {
+			field = *params.SortBy
+		}
 
-	return ctx.JSON(http.StatusNotImplemented, map[string]string{"message": "Not implemented yet"})
+		orderDir := schema.Desc
+		if params.SortOrder != nil {
+			orderDir = *params.SortOrder
+		}
+
+		// colName := q.NamingStrategy.ColumnName("questions", string(field))
+		colName := query.Question.UnderlyingDB().NamingStrategy.ColumnName(query.Question.TableName(), string(field))
+		if col, ok := query.Question.GetFieldByName(colName); ok {
+			if orderDir == schema.Asc {
+				q = q.Order(col.Asc())
+			} else {
+				q = q.Order(col.Desc())
+			}
+		}
+		// q = q.Order(colName + " " + string(orderDir))
+	}
+
+	if params.Limit != nil && params.Page != nil {
+		q = q.Limit(int(*params.Limit)).Offset(int(*params.Page))
+	}
+
+	var questions []*model.Question
+	// result := q.Find(&questions)
+	questions, err := q.Find()
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, &schema.ErrorDetails{
+			Message: "Failed to retrieve questions",
+			Details: err,
+		})
+	}
+
+	return ctx.JSON(http.StatusOK, questions)
 }
 
 func (h *QuestionHandler) GetSentQuestions(ctx echo.Context, params schema.GetSentQuestionsParams) error {
