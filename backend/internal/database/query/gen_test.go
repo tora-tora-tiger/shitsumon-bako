@@ -77,6 +77,7 @@ func Test_WithContext(t *testing.T) {
 	qCtx := query.WithContext(context.WithValue(context.Background(), key, value))
 
 	for _, ctx := range []context.Context{
+		qCtx.Answer.UnderlyingDB().Statement.Context,
 		qCtx.ImageFile.UnderlyingDB().Statement.Context,
 		qCtx.Question.UnderlyingDB().Statement.Context,
 	} {

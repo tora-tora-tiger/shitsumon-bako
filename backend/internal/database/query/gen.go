@@ -17,12 +17,14 @@ import (
 
 var (
 	Q         = new(Query)
+	Answer    *answer
 	ImageFile *imageFile
 	Question  *question
 )
 
 func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	*Q = *Use(db, opts...)
+	Answer = &Q.Answer
 	ImageFile = &Q.ImageFile
 	Question = &Q.Question
 }
@@ -30,6 +32,7 @@ func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
 		db:        db,
+		Answer:    newAnswer(db, opts...),
 		ImageFile: newImageFile(db, opts...),
 		Question:  newQuestion(db, opts...),
 	}
@@ -38,6 +41,7 @@ func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 type Query struct {
 	db *gorm.DB
 
+	Answer    answer
 	ImageFile imageFile
 	Question  question
 }
@@ -47,6 +51,7 @@ func (q *Query) Available() bool { return q.db != nil }
 func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
 		db:        db,
+		Answer:    q.Answer.clone(db),
 		ImageFile: q.ImageFile.clone(db),
 		Question:  q.Question.clone(db),
 	}
@@ -63,18 +68,21 @@ func (q *Query) WriteDB() *Query {
 func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
 		db:        db,
+		Answer:    q.Answer.replaceDB(db),
 		ImageFile: q.ImageFile.replaceDB(db),
 		Question:  q.Question.replaceDB(db),
 	}
 }
 
 type queryCtx struct {
+	Answer    IAnswerDo
 	ImageFile IImageFileDo
 	Question  IQuestionDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
+		Answer:    q.Answer.WithContext(ctx),
 		ImageFile: q.ImageFile.WithContext(ctx),
 		Question:  q.Question.WithContext(ctx),
 	}

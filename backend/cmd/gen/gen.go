@@ -14,7 +14,7 @@ func main() {
 	})
 
 	// Generate basic type-safe DAO API for struct `model.User` following conventions
-	g.ApplyBasic(model.Question{}, model.ImageFile{})
+	g.ApplyBasic(model.Question{}, model.ImageFile{}, model.Answer{})
 
 	// Generate the code
 	g.Execute()
