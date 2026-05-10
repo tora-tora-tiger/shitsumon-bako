@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"gorm.io/gen"
 
 	"backend/internal/database"
 	"backend/internal/database/model"
@@ -110,7 +111,67 @@ func (h *QuestionHandler) GetReceivedQuestions(ctx echo.Context, params schema.G
 }
 
 func (h *QuestionHandler) GetSentQuestions(ctx echo.Context, params schema.GetSentQuestionsParams) error {
-	return ctx.JSON(http.StatusNotImplemented, map[string]string{"message": "Not implemented yet"})
+	q := query.Question.WithContext(ctx.Request().Context())
+
+	if params.HasAnswer != nil {
+		ans := query.Answer
+		qst := query.Question
+		subq := query.Answer.WithContext(ctx.Request().Context()).Where(ans.QuestionId.EqCol(qst.Id))
+
+		if *params.HasAnswer {
+			// SELECT * FROM questions
+			// WHERE EXISTS (
+			//  SELECT * FROM answers
+			//  WHERE answers.question_id = questions.id
+			// )
+			q = q.Where(gen.Exists(subq))
+		} else {
+			q = q.Not(gen.Exists(subq))
+		}
+		q.Preload(query.Question.Answer)
+	}
+
+	q.Preload(query.Question.AttachedImageList)
+
+	// ソート
+	if params.SortBy != nil {
+		field := schema.CreatedAt
+		if params.SortBy != nil {
+			field = *params.SortBy
+		}
+
+		orderDir := schema.Desc
+		if params.SortOrder != nil {
+			orderDir = *params.SortOrder
+		}
+
+		colName := query.Question.UnderlyingDB().NamingStrategy.ColumnName(query.Question.TableName(), string(field))
+		if col, ok := query.Question.GetFieldByName(colName); ok {
+			if orderDir == schema.Asc {
+				q = q.Order(col.Asc())
+			} else {
+				q = q.Order(col.Desc())
+			}
+		}
+	}
+
+
+	// ページネーション
+	if params.Limit != nil && params.Page != nil {
+		q = q.Limit(int(*params.Limit)).Offset(int(*params.Page))
+	}
+	
+	var questions []*model.Question
+	// result := q.Find(&questions)
+	questions, err := q.Find()
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, &schema.ErrorDetails{
+			Message: "Failed to retrieve questions",
+			Details: err,
+		})
+	}
+
+	return ctx.JSON(http.StatusOK, questions)
 }
 
 func (h *QuestionHandler) GetQuestionDetail(ctx echo.Context, questionId string) error {
