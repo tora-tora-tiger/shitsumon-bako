@@ -7,4 +7,5 @@ import (
 func Migrate() {
 	DB.AutoMigrate(&model.ImageFile{})
 	DB.AutoMigrate(&model.Question{})
+	DB.AutoMigrate(&model.Answer{})
 }

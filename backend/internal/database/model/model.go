@@ -49,9 +49,19 @@ type Question struct {
 	TimeStamp
 	Id                string       `gorm:"primaryKey;type:uuid"`
 	Status            string       `gorm:"type:text;not null;default:'unread'" sql:"type:ENUM('unread', 'read', 'answered')"`
-	Content           string       `gorm:"type:text;not null"`
-	IsAnonymous       bool         `gorm:"not null;default:true"`
-	SenderId          *string      `gorm:"type:uuid;index"`
 	RecipientId       string       `gorm:"type:uuid;index;not null"`
+	SenderId          *string      `gorm:"type:uuid;index"`
+	Content           string       `gorm:"type:text;not null"`
 	AttachedImageList *[]ImageFile `gorm:"foreignKey:QuestionId"` //;constraint:OnDelete:CASCADE"`
+	IsAnonymous       bool         `gorm:"not null;default:true"`
+	Answer            *Answer      `gorm:"foreignKey:QuestionId"` //;constraint:OnDelete:CASCADE"`
+}
+
+type Answer struct {
+	TimeStamp
+	Id                string       `gorm:"primaryKey;type:uuid"`
+	QuestionId        string       `gorm:"type:uuid;index"`
+	Content           string       `gorm:"type:text;not null"`
+	AttachedImageList *[]ImageFile `gorm:"foreignKey:QuestionId"` //;constraint:OnDelete:CASCADE"`
+	IsPublic          bool         `gorm:"not null;default:false"`
 }
