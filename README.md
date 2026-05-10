@@ -14,3 +14,12 @@
 cd backend
 go tool oapi-codegen -config ./oapi-config.yml ../api/tsp-output/schema/openapi.yaml
 ```
+
+### DBマイグレーション
+現在はサーバー起動時に行う
+
+### GORM Gen
+```bash
+cd backend
+go run cmd/gen/gen.go
+```
