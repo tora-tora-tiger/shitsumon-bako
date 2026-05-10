@@ -28,8 +28,9 @@ func (h *QuestionHandler) CreateQuestion(ctx echo.Context) error {
 	}
 
 	q := model.Question{
-		Content:     req.Content,
 		RecipientId: req.RecipientId,
+		// senderは認証情報から取る
+		Content:     req.Content,
 		// 省略したいフィールドは設定しない（ポインタなら nil のまま）
 	}
 
@@ -60,6 +61,12 @@ func (h *QuestionHandler) GetReceivedQuestions(ctx echo.Context, params schema.G
 		q = q.Where(query.Question.Status.Eq(string(*params.Status)))
 	}
 
+	// 添付ファイル
+	q = q.Preload(query.Question.AttachedImageList)
+
+	// 回答
+	q = q.Preload(query.Question.Answer)
+
 	// ソート
 	if params.SortBy != nil {
 		field := schema.GetReceivedQuestionsParamsSortByCreatedAt
@@ -84,6 +91,7 @@ func (h *QuestionHandler) GetReceivedQuestions(ctx echo.Context, params schema.G
 		// q = q.Order(colName + " " + string(orderDir))
 	}
 
+	// ページネーション
 	if params.Limit != nil && params.Page != nil {
 		q = q.Limit(int(*params.Limit)).Offset(int(*params.Page))
 	}
