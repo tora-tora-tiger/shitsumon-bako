@@ -33,10 +33,21 @@ func newQuestion(db *gorm.DB, opts ...gen.DOOption) question {
 	_question.DeletedAt = field.NewField(tableName, "deleted_at")
 	_question.Id = field.NewString(tableName, "id")
 	_question.Status = field.NewString(tableName, "status")
+	_question.RecipientId = field.NewString(tableName, "recipient_id")
+	_question.SenderId = field.NewString(tableName, "sender_id")
 	_question.Content = field.NewString(tableName, "content")
 	_question.IsAnonymous = field.NewBool(tableName, "is_anonymous")
-	_question.SenderId = field.NewString(tableName, "sender_id")
-	_question.RecipientId = field.NewString(tableName, "recipient_id")
+	_question.Answer = questionHasOneAnswer{
+		db: db.Session(&gorm.Session{}),
+
+		RelationField: field.NewRelation("Answer", "model.Answer"),
+		AttachedImageList: struct {
+			field.RelationField
+		}{
+			RelationField: field.NewRelation("Answer.AttachedImageList", "model.ImageFile"),
+		},
+	}
+
 	_question.AttachedImageList = questionHasManyAttachedImageList{
 		db: db.Session(&gorm.Session{}),
 
@@ -51,16 +62,18 @@ func newQuestion(db *gorm.DB, opts ...gen.DOOption) question {
 type question struct {
 	questionDo
 
-	ALL               field.Asterisk
-	CreatedAt         field.Time
-	UpdatedAt         field.Time
-	DeletedAt         field.Field
-	Id                field.String
-	Status            field.String
-	Content           field.String
-	IsAnonymous       field.Bool
-	SenderId          field.String
-	RecipientId       field.String
+	ALL         field.Asterisk
+	CreatedAt   field.Time
+	UpdatedAt   field.Time
+	DeletedAt   field.Field
+	Id          field.String
+	Status      field.String
+	RecipientId field.String
+	SenderId    field.String
+	Content     field.String
+	IsAnonymous field.Bool
+	Answer      questionHasOneAnswer
+
 	AttachedImageList questionHasManyAttachedImageList
 
 	fieldMap map[string]field.Expr
@@ -83,10 +96,10 @@ func (q *question) updateTableName(table string) *question {
 	q.DeletedAt = field.NewField(table, "deleted_at")
 	q.Id = field.NewString(table, "id")
 	q.Status = field.NewString(table, "status")
+	q.RecipientId = field.NewString(table, "recipient_id")
+	q.SenderId = field.NewString(table, "sender_id")
 	q.Content = field.NewString(table, "content")
 	q.IsAnonymous = field.NewBool(table, "is_anonymous")
-	q.SenderId = field.NewString(table, "sender_id")
-	q.RecipientId = field.NewString(table, "recipient_id")
 
 	q.fillFieldMap()
 
@@ -103,21 +116,23 @@ func (q *question) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (q *question) fillFieldMap() {
-	q.fieldMap = make(map[string]field.Expr, 10)
+	q.fieldMap = make(map[string]field.Expr, 11)
 	q.fieldMap["created_at"] = q.CreatedAt
 	q.fieldMap["updated_at"] = q.UpdatedAt
 	q.fieldMap["deleted_at"] = q.DeletedAt
 	q.fieldMap["id"] = q.Id
 	q.fieldMap["status"] = q.Status
+	q.fieldMap["recipient_id"] = q.RecipientId
+	q.fieldMap["sender_id"] = q.SenderId
 	q.fieldMap["content"] = q.Content
 	q.fieldMap["is_anonymous"] = q.IsAnonymous
-	q.fieldMap["sender_id"] = q.SenderId
-	q.fieldMap["recipient_id"] = q.RecipientId
 
 }
 
 func (q question) clone(db *gorm.DB) question {
 	q.questionDo.ReplaceConnPool(db.Statement.ConnPool)
+	q.Answer.db = db.Session(&gorm.Session{Initialized: true})
+	q.Answer.db.Statement.ConnPool = db.Statement.ConnPool
 	q.AttachedImageList.db = db.Session(&gorm.Session{Initialized: true})
 	q.AttachedImageList.db.Statement.ConnPool = db.Statement.ConnPool
 	return q
@@ -125,8 +140,94 @@ func (q question) clone(db *gorm.DB) question {
 
 func (q question) replaceDB(db *gorm.DB) question {
 	q.questionDo.ReplaceDB(db)
+	q.Answer.db = db.Session(&gorm.Session{})
 	q.AttachedImageList.db = db.Session(&gorm.Session{})
 	return q
+}
+
+type questionHasOneAnswer struct {
+	db *gorm.DB
+
+	field.RelationField
+
+	AttachedImageList struct {
+		field.RelationField
+	}
+}
+
+func (a questionHasOneAnswer) Where(conds ...field.Expr) *questionHasOneAnswer {
+	if len(conds) == 0 {
+		return &a
+	}
+
+	exprs := make([]clause.Expression, 0, len(conds))
+	for _, cond := range conds {
+		exprs = append(exprs, cond.BeCond().(clause.Expression))
+	}
+	a.db = a.db.Clauses(clause.Where{Exprs: exprs})
+	return &a
+}
+
+func (a questionHasOneAnswer) WithContext(ctx context.Context) *questionHasOneAnswer {
+	a.db = a.db.WithContext(ctx)
+	return &a
+}
+
+func (a questionHasOneAnswer) Session(session *gorm.Session) *questionHasOneAnswer {
+	a.db = a.db.Session(session)
+	return &a
+}
+
+func (a questionHasOneAnswer) Model(m *model.Question) *questionHasOneAnswerTx {
+	return &questionHasOneAnswerTx{a.db.Model(m).Association(a.Name())}
+}
+
+func (a questionHasOneAnswer) Unscoped() *questionHasOneAnswer {
+	a.db = a.db.Unscoped()
+	return &a
+}
+
+type questionHasOneAnswerTx struct{ tx *gorm.Association }
+
+func (a questionHasOneAnswerTx) Find() (result *model.Answer, err error) {
+	return result, a.tx.Find(&result)
+}
+
+func (a questionHasOneAnswerTx) Append(values ...*model.Answer) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Append(targetValues...)
+}
+
+func (a questionHasOneAnswerTx) Replace(values ...*model.Answer) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Replace(targetValues...)
+}
+
+func (a questionHasOneAnswerTx) Delete(values ...*model.Answer) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Delete(targetValues...)
+}
+
+func (a questionHasOneAnswerTx) Clear() error {
+	return a.tx.Clear()
+}
+
+func (a questionHasOneAnswerTx) Count() int64 {
+	return a.tx.Count()
+}
+
+func (a questionHasOneAnswerTx) Unscoped() *questionHasOneAnswerTx {
+	a.tx = a.tx.Unscoped()
+	return &a
 }
 
 type questionHasManyAttachedImageList struct {
