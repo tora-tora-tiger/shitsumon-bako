@@ -29,6 +29,11 @@ func (q *Question) BeforeCreate(tx *gorm.DB) (err error) {
 	return
 }
 
+func (a *Answer) BeforeCreate(tx *gorm.DB) (err error) {
+	a.Id = generateUUID()
+	return
+}
+
 type TimeStamp struct {
 	CreatedAt time.Time      `gorm:"autoCreateTime"`
 	UpdatedAt time.Time      `gorm:"autoUpdateTime"`
