@@ -175,7 +175,27 @@ func (h *QuestionHandler) GetSentQuestions(ctx echo.Context, params schema.GetSe
 }
 
 func (h *QuestionHandler) GetQuestionDetail(ctx echo.Context, questionId string) error {
-	return ctx.JSON(http.StatusNotImplemented, map[string]string{"message": "Not implemented yet"})
+	q := query.Question.WithContext(ctx.Request().Context())
+	q = q.Where(query.Question.Id.Eq(questionId))
+
+	q.Preload(query.Question.AttachedImageList)
+	q.Preload(query.Question.Answer)
+
+	question, err := q.Find()
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, &schema.ErrorDetails{
+			Message: "Failed to retrieve questions",
+			Details: err,
+		})
+	}
+
+	if len(question) == 0 {
+		return ctx.JSON(http.StatusNotFound, &schema.ErrorDetails{
+			Message: "Question not found",
+		})
+	}
+
+	return ctx.JSON(http.StatusOK, question[0])
 }
 
 func (h *QuestionHandler) UpdateQuestion(ctx echo.Context, questionId string) error {
